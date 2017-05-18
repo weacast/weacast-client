@@ -1,11 +1,11 @@
 import L from 'leaflet'
 import HeatmapOverlay from 'leaflet-heatmap'
 import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
-import api from 'src/api'
 
 let HeatLayer = L.TimeDimension.Layer.extend({
 
-  initialize (options) {
+  initialize (api, options) {
+    this.api = api
     let layer = new HeatmapOverlay({
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
@@ -67,7 +67,7 @@ let HeatLayer = L.TimeDimension.Layer.extend({
   },
 
   fetchAvailableTimes () {
-    return api.getService(this.forecastModel.name + '/' + this.options.element).find({
+    return this.api.getService(this.forecastModel.name + '/' + this.options.element).find({
       query: {
         $paginate: false,
         $select: ['forecastTime']
@@ -94,7 +94,7 @@ let HeatLayer = L.TimeDimension.Layer.extend({
       }
     }
 
-    api.getService(this.forecastModel.name + '/' + this.options.element).find(query)
+    this.api.getService(this.forecastModel.name + '/' + this.options.element).find(query)
     .then(response => {
       // Keep track of downloaded data
       this.downloadedForecastTime = new Date(response.data[0].forecastTime)
@@ -128,4 +128,4 @@ let HeatLayer = L.TimeDimension.Layer.extend({
 
 })
 
-export default HeatLayer
+export { HeatLayer }

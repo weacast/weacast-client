@@ -2,11 +2,11 @@ import L from 'leaflet'
 import 'leaflet-velocity/dist/leaflet-velocity.js'
 import 'leaflet-velocity/dist/leaflet-velocity.css'
 import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
-import api from 'src/api'
 
 let FlowLayer = L.TimeDimension.Layer.extend({
 
-  initialize (options) {
+  initialize (api, options) {
+    this.api = api
     let layer = L.velocityLayer({
       displayValues: true,
       displayOptions: {
@@ -63,7 +63,7 @@ let FlowLayer = L.TimeDimension.Layer.extend({
   },
 
   fetchAvailableTimes () {
-    return api.getService(this.forecastModel.name + '/' + this.options.uElement).find({
+    return this.api.getService(this.forecastModel.name + '/' + this.options.uElement).find({
       query: {
         $paginate: false,
         $select: ['forecastTime']
@@ -90,11 +90,11 @@ let FlowLayer = L.TimeDimension.Layer.extend({
       }
     }
 
-    api.getService(this.forecastModel.name + '/' + this.options.uElement).find(query)
+    this.api.getService(this.forecastModel.name + '/' + this.options.uElement).find(query)
     .then(response => {
       // Keep track of downloaded data
       this.uFlow.data = response.data[0].data
-      return api.getService(this.forecastModel.name + '/' + this.options.vElement).find(query)
+      return this.api.getService(this.forecastModel.name + '/' + this.options.vElement).find(query)
     })
     .then(response => {
       // Keep track of downloaded data
@@ -122,4 +122,4 @@ let FlowLayer = L.TimeDimension.Layer.extend({
 
 })
 
-export default FlowLayer
+export { FlowLayer }
