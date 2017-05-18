@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - 'node'
+  - '7'
+services:
+  - mongodb
+addons:
+  code_climate:
+    repo_token: '1537b3b6588d23c51f18e04cab1be6dc52537396fdebc7784b7e7b9037ecee5c'
+notifications:
+  email: false
+before_script:
+  - npm install -g codeclimate-test-reporter
+after_script:
+  - codeclimate-test-reporter < coverage/lcov.info
