@@ -1,19 +1,19 @@
-# weacast-core
+# weacast-client
 
-[![Build Status](https://travis-ci.org/weacast/weacast-core.png?branch=master)](https://travis-ci.org/weacast/weacast-core)
-[![Code Climate](https://codeclimate.com/github/weacast/weacast-core/badges/gpa.svg)](https://codeclimate.com/github/weacast/weacast-core)
-[![Test Coverage](https://codeclimate.com/github/weacast/weacast-core/badges/coverage.svg)](https://codeclimate.com/github/weacast/weacast-core/coverage)
-[![Dependency Status](https://img.shields.io/david/weacast/weacast-core.svg?style=flat-square)](https://david-dm.org/weacast/weacast-core)
-[![Download Status](https://img.shields.io/npm/dm/weacast-core.svg?style=flat-square)](https://www.npmjs.com/package/weacast-core)
+[![Build Status](https://travis-ci.org/weacast/weacast-client.png?branch=master)](https://travis-ci.org/weacast/weacast-client)
+[![Code Climate](https://codeclimate.com/github/weacast/weacast-client/badges/gpa.svg)](https://codeclimate.com/github/weacast/weacast-client)
+[![Test Coverage](https://codeclimate.com/github/weacast/weacast-client/badges/coverage.svg)](https://codeclimate.com/github/weacast/weacast-client/coverage)
+[![Dependency Status](https://img.shields.io/david/weacast/weacast-client.svg?style=flat-square)](https://david-dm.org/weacast/weacast-client)
+[![Download Status](https://img.shields.io/npm/dm/weacast-client.svg?style=flat-square)](https://www.npmjs.com/package/weacast-client)
 
-> Basic utils to support Weacast and plugins
+> Basic utils to support Weacast-based clients
 
 ## Installation
 
 ```
-npm install weacast-core --save
+npm install weacast-client --save
 // Or with Yarn
-yarn add weacast-core
+yarn add weacast-client
 ```
 
 ## Documentation
