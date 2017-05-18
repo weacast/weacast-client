@@ -58,7 +58,8 @@ let FlowLayer = L.TimeDimension.Layer.extend({
   },
 
   _update () {
-    this._baseLayer.setData([this.uFlow, this.vFlow])
+    // To be more reactive update is done directly after download not when the layer check is performed
+    // this._baseLayer.setData([this.uFlow, this.vFlow])
     return true
   },
 
@@ -86,6 +87,13 @@ let FlowLayer = L.TimeDimension.Layer.extend({
     let query = {
       query: {
         time: this.currentForecastTime.toISOString(),
+        // Resample according to input parameters
+        oLon: this.uFlow.header.lo1,
+        oLat: this.uFlow.header.la1,
+        sLon: this.uFlow.header.nx,
+        sLat: this.uFlow.header.ny,
+        dLon: this.uFlow.header.dx,
+        dLat: this.uFlow.header.dy,
         $select: ['forecastTime', 'data']
       }
     }
@@ -100,6 +108,8 @@ let FlowLayer = L.TimeDimension.Layer.extend({
       // Keep track of downloaded data
       this.downloadedForecastTime = new Date(response.data[0].forecastTime)
       this.vFlow.data = response.data[0].data
+      // To be reactive directly set data after download
+      this._baseLayer.setData([this.uFlow, this.vFlow])
     })
   },
 
@@ -112,7 +122,7 @@ let FlowLayer = L.TimeDimension.Layer.extend({
       lo1: this.forecastModel.origin[0],
       la1: this.forecastModel.origin[1],
       dx: this.forecastModel.resolution[0],
-      dy: this.forecastModel.resolution[0]
+      dy: this.forecastModel.resolution[1]
     }
     Object.assign(this.uFlow.header, modelHeader)
     Object.assign(this.vFlow.header, modelHeader)

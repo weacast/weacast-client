@@ -62,7 +62,8 @@ let HeatLayer = L.TimeDimension.Layer.extend({
   },
 
   _update () {
-    this._baseLayer.setData(this.heat)
+    // To be more reactive update is done directly after download not when the layer check is performed
+    // this._baseLayer.setData(this.heat)
     return true
   },
 
@@ -108,8 +109,9 @@ let HeatLayer = L.TimeDimension.Layer.extend({
       for (let j = 0; j < this.forecastModel.size[1]; j++) {
         for (let i = 0; i < this.forecastModel.size[0]; i++) {
           let value = data[i + j * this.forecastModel.size[1]]
-          let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0])
-          let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1])
+          // Offset by pixel center
+          let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0] + 0.5 * resolution[0])
+          let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1] + 0.5 * resolution[1])
           this.heat.data.push({
             lat,
             lng,
@@ -117,6 +119,8 @@ let HeatLayer = L.TimeDimension.Layer.extend({
           })
         }
       }
+      // To be reactive directly set data after download
+      this._baseLayer.setData(this.heat)
     })
   },
 
