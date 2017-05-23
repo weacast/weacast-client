@@ -1,15 +1,14 @@
 import L from 'leaflet'
 import HeatmapOverlay from 'leaflet-heatmap'
-import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import { ForecastLayer } from './forecast-layer'
 
-let HeatLayer = L.TimeDimension.Layer.extend({
+let HeatLayer = ForecastLayer.extend({
 
   initialize (api, options) {
-    this.api = api
     let layer = new HeatmapOverlay({
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
-      radius: 0.15,
+      radius: 0.25,
       minOpacity: 0,
       maxOpacity: 0.8,
       // scales the radius based on map zoom
@@ -34,7 +33,7 @@ let HeatLayer = L.TimeDimension.Layer.extend({
       // which field name in your data represents the data value - default "value"
       valueField: 'value'
     })
-    L.TimeDimension.Layer.prototype.initialize.call(this, layer, options)
+    ForecastLayer.prototype.initialize.call(this, api, layer, options)
     // Format in leaflet-heatmap layer data model
     this.heat = {
       min: 0,                   // min will be adjusted on-demand
@@ -43,93 +42,30 @@ let HeatLayer = L.TimeDimension.Layer.extend({
     }
   },
 
-  onAdd (map) {
-    L.TimeDimension.Layer.prototype.onAdd.call(this, map)
-    map.addLayer(this._baseLayer)
-    if (this._timeDimension) {
-      this.currentForecastTime = new Date(this._timeDimension.getCurrentTime())
-      this.fetchData()
-    }
-  },
-
-  _onNewTimeLoading (event) {
-    this.currentForecastTime = new Date(event.time)
-    this.fetchData()
-  },
-
-  isReady (time) {
-    return (this.downloadedForecastTime ? this.downloadedForecastTime.getTime() === time : false)
-  },
-
-  _update () {
-    // To be more reactive update is done directly after download not when the layer check is performed
-    // this._baseLayer.setData(this.heat)
-    return true
-  },
-
-  fetchAvailableTimes () {
-    return this.api.getService(this.forecastModel.name + '/' + this.options.element).find({
-      query: {
-        $paginate: false,
-        $select: ['forecastTime']
-      }
-    })
-    .then(response => {
-      let times = response.map(item => item.forecastTime)
-      this._timeDimension.setAvailableTimes(times.join(), 'replace')
-    })
-  },
-
-  fetchData () {
-    // Not yet ready
-    if (!this.forecastModel || !this.currentForecastTime) return
-    // Already up-to-date ?
-    if (this.downloadedForecastTime &&
-        (this.currentForecastTime.getTime() === this.downloadedForecastTime.getTime())) return
-
-    // Query wind for current time
-    let query = {
-      query: {
-        time: this.currentForecastTime.toISOString(),
-        $select: ['forecastTime', 'data', 'minValue', 'maxValue']
+  setData (data) {
+    this.heat.min = data[0].minValue
+    this.heat.max = data[0].maxValue
+    let heatValues = data[0].data
+    // Depending on the model longitude/latitude increases/decreases according to grid scanning
+    let lonDirection = (this.forecastModel.origin[0] === this.forecastModel.bounds[0] ? 1 : -1)
+    let latDirection = (this.forecastModel.origin[1] === this.forecastModel.bounds[1] ? 1 : -1)
+    this.heat.data = []
+    for (let j = 0; j < this.forecastModel.size[1]; j++) {
+      for (let i = 0; i < this.forecastModel.size[0]; i++) {
+        let value = heatValues[i + j * this.forecastModel.size[0]]
+        // Offset by pixel center
+        let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0] + 0.5 * this.forecastModel.resolution[0])
+        let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1] + 0.5 * this.forecastModel.resolution[1])
+        this.heat.data.push({
+          lat,
+          lng,
+          value
+        })
       }
     }
-
-    this.api.getService(this.forecastModel.name + '/' + this.options.element).find(query)
-    .then(response => {
-      // Keep track of downloaded data
-      this.downloadedForecastTime = new Date(response.data[0].forecastTime)
-      this.heat.min = response.data[0].minValue
-      this.heat.max = response.data[0].maxValue
-      let data = response.data[0].data
-      // Depending on the model longitude/latitude increases/decreases according to grid scanning
-      let lonDirection = (this.forecastModel.origin[0] === this.forecastModel.bounds[0] ? 1 : -1)
-      let latDirection = (this.forecastModel.origin[1] === this.forecastModel.bounds[1] ? 1 : -1)
-      this.heat.data = []
-      for (let j = 0; j < this.forecastModel.size[1]; j++) {
-        for (let i = 0; i < this.forecastModel.size[0]; i++) {
-          let value = data[i + j * this.forecastModel.size[1]]
-          // Offset by pixel center
-          let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0] + 0.5 * resolution[0])
-          let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1] + 0.5 * resolution[1])
-          this.heat.data.push({
-            lat,
-            lng,
-            value
-          })
-        }
-      }
-      // To be reactive directly set data after download
-      this._baseLayer.setData(this.heat)
-    })
-  },
-
-  setForecastModel (model) {
-    this.forecastModel = model
-    // This will launch a refresh
-    this.fetchAvailableTimes()
+    // To be reactive directly set data after download
+    this._baseLayer.setData(this.heat)
   }
-
 })
 
 export { HeatLayer }
