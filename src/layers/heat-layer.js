@@ -1,4 +1,3 @@
-import L from 'leaflet'
 import HeatmapOverlay from 'leaflet-heatmap'
 import { ForecastLayer } from './forecast-layer'
 

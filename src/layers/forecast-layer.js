@@ -46,7 +46,7 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
     })
   },
 
-  getQuery() {
+  getQuery () {
     // Default implementation
     return {
       query: {
@@ -64,7 +64,7 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
     }
   },
 
-  setData(data) {
+  setData (data) {
     // To be implemented
   },
 

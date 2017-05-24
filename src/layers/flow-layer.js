@@ -21,7 +21,7 @@ let FlowLayer = ForecastLayer.extend({
       data: null                // data will be requested on-demand
     })
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
-    
+
     // Format in leaflet-velocity layer data model
     this.uFlow = {
       header: {
@@ -39,7 +39,7 @@ let FlowLayer = ForecastLayer.extend({
     }
   },
 
-  setData(data) {
+  setData (data) {
     this.uFlow.data = data[0].data
     this.vFlow.data = data[1].data
     this._baseLayer.setData([this.uFlow, this.vFlow])

@@ -1,6 +1,3 @@
-export { FlowLayer, HeatLayer } from './layers'
+export { ForecastLayer, FlowLayer, HeatLayer } from './layers'
 
-export weacast from './api'
-
-
-
+export { weacast } from './api'

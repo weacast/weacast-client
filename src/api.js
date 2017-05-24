@@ -4,7 +4,6 @@ import io from 'socket.io-client'
 import config from 'config'
 
 export default function weacast () {
-
   let api = feathers()
     .configure(hooks())
     .configure(feathers.authentication({
@@ -23,8 +22,7 @@ export default function weacast () {
       path: config.apiPath + 'ws'
     })
     api.configure(feathers.socketio(socket))
-  }
-  else {
+  } else {
     api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
   }
 

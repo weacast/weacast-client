@@ -2,8 +2,9 @@ import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import 'jsdom-global/register'
 import fetch from 'isomorphic-fetch'
-window.fetch = fetch
 import weacast from '../src/api'
+
+window.fetch = fetch
 
 describe('weacast-client', () => {
   let app
