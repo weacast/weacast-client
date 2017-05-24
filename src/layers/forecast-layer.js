@@ -68,7 +68,7 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
     // To be implemented
   },
 
-  async fetchData () {
+  fetchData () {
     // Not yet ready
     if (!this.forecastModel || !this.currentForecastTime) return
     // Already up-to-date ?
@@ -82,9 +82,11 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
       queries.push(this.api.getService(this.forecastModel.name + '/' + element).find(query))
     }
 
-    let results = await Promise.all(queries)
-    // To be reactive directly set data after download, flatten because find returns an array even if a sngle element is selected
-    this.setData([].concat(...results))
+    return Promise.all(queries)
+    .then(results => {
+      // To be reactive directly set data after download, flatten because find returns an array even if a sngle element is selected
+      this.setData([].concat(...results))
+    })
   },
 
   setForecastModel (model) {
