@@ -62,4 +62,5 @@ let FlowLayer = ForecastLayer.extend({
 
 })
 
+L.Weacast.FlowLayer = FlowLayer
 export { FlowLayer }

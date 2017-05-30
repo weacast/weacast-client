@@ -97,4 +97,6 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
 
 })
 
+L.Weacast = {}
+L.Weacast.ForecastLayer = ForecastLayer
 export { ForecastLayer }

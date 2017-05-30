@@ -7,9 +7,9 @@ let HeatLayer = ForecastLayer.extend({
     let layer = new HeatmapOverlay({
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
-      radius: 0.25,
-      minOpacity: 0,
-      maxOpacity: 0.8,
+      radius: options.radius || 0.3,
+      minOpacity: options.minOpacity || 0,
+      maxOpacity: options.maxOpacity || 0.8,
       // scales the radius based on map zoom
       scaleRadius: true,
       // custom gradient colors
@@ -67,4 +67,5 @@ let HeatLayer = ForecastLayer.extend({
   }
 })
 
+L.Weacast.HeatLayer = HeatLayer
 export { HeatLayer }
