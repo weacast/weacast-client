@@ -40,9 +40,11 @@ let FlowLayer = ForecastLayer.extend({
   },
 
   setData (data) {
-    this.uFlow.data = data[0].data
-    this.vFlow.data = data[1].data
-    this._baseLayer.setData([this.uFlow, this.vFlow])
+    if (data.length > 1) {
+      this.uFlow.data = data[0].data
+      this.vFlow.data = data[1].data
+      this._baseLayer.setData([this.uFlow, this.vFlow])
+    }
   },
 
   setForecastModel (model) {

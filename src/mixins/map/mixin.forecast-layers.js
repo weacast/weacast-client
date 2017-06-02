@@ -1,6 +1,8 @@
 import L from 'leaflet'
 import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
 import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
+import moment from 'moment'
+import 'iso8601-js-period/iso8601.js'
 import * as layers from '../../layers'
 
 import store from '../store'
@@ -8,6 +10,7 @@ import store from '../store'
 let forecastLayersMixin = {
   data () {
     return {
+      currentTime: null,
       forecastLayers: []
     }
   },
@@ -19,7 +22,7 @@ let forecastLayersMixin = {
   methods: {
     setupForecastLayers () {
       // Not yet ready
-      if (!this.forecastModel) return
+      if (!this.forecastModel || !this.map || !this.map.timeDimension) return
       // For visualization we decimate the data resolution by 2 for performance reasons
       let visualModel = {
         name: this.forecastModel.name,
@@ -39,13 +42,26 @@ let forecastLayersMixin = {
         // Should come last so that we do not trigger multiple updates of data
         layer.setForecastModel(visualModel)
       })
+    },
+    setCurrentTime(datetime) {
+      // String or milliseconds
+      if (typeof datetime === 'string' || Number.isInteger(datetime)) {
+        this.currentTime = moment.utc(datetime)
+      }
+      else {
+        this.currentTime = datetime
+      }
+      this.$emit('currentTimeChanged', this.currentTime)
+      // Synchronize UI when the time has been set programmatically
+      if (this.map.timeDimension.getCurrentTime() !== this.currentTime.valueOf()) {
+        this.map.timeDimension.setCurrentTime(this.currentTime.valueOf())
+      }
     }
   },
   mounted () {
     let timeDimension = L.timeDimension({})
     timeDimension.on('timeload', data => {
-      this.currentTime = new Date(data.time)
-      this.$emit('currentTimeChanged', this.currentTime)
+      this.setCurrentTime(data.time)
     })
     let timeDimensionControl = L.control.timeDimension({
       timeDimension,
@@ -55,7 +71,7 @@ let forecastLayersMixin = {
     })
     this.controls.push(timeDimensionControl)
     // Make time dimension available
-    this.$on('ready', _ => {
+    this.$on('mapReady', _ => {
       this.map.timeDimension = timeDimension
       this.setupForecastLayers()
     })
