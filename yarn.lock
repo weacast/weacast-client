@@ -2511,6 +2511,10 @@ leaflet-velocity@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/leaflet-velocity/-/leaflet-velocity-1.1.0.tgz#f91a1318ae12c0b8ac9d5faceae3d2e12b3772bb"
 
+leaflet.markercluster@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/leaflet.markercluster/-/leaflet.markercluster-1.0.5.tgz#12fde61630f4eb3146d92b56a36fdff903d1e023"
+
 leaflet@*, leaflet@^1.0.3, "leaflet@~0.7.4 || ~1.0.0":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.0.3.tgz#1f401b98b45c8192134c6c8d69686253805007c8"
@@ -2592,6 +2596,10 @@ lodash.keys@^3.0.0:
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
+
+loglevel@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/loglevel/-/loglevel-1.4.1.tgz#95b383f91a3c2756fd4ab093667e4309161f2bcd"
 
 longest@^1.0.1:
   version "1.0.1"
@@ -3733,6 +3741,10 @@ verror@1.3.6:
   resolved "https://registry.yarnpkg.com/verror/-/verror-1.3.6.tgz#cff5df12946d297d2baaefaa2689e25be01c005c"
   dependencies:
     extsprintf "1.0.2"
+
+vue@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.3.3.tgz#d1eaa8fde5240735a4563e74f2c7fead9cbb064c"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"

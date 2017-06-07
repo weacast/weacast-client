@@ -1,4 +1,7 @@
 import L from 'leaflet'
+import 'leaflet.markercluster/dist/leaflet.markercluster.js'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
 
 import store from '../store'
@@ -7,6 +10,11 @@ let geojsonLayersMixin = {
   methods: {
     addGeoJson (geojson, geojsonOptions) {
       return this.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()))
+    },
+    addGeoJsonCluster (geojson, geojsonOptions) {
+      let cluster = L.markerClusterGroup()
+      cluster.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()))
+      return this.addLayer(cluster)
     },
     addTimedGeoJson (geojson, timeOptions, geojsonOptions) {
       return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), timeOptions))
@@ -17,13 +25,20 @@ let geojsonLayersMixin = {
           // Custom defined function in component ?
           if (typeof this.getFeaturePopup === 'function') {
             layer.bindPopup(this.getFeaturePopup(feature, layer))
-          }
-          // Configured or default style
-          else if (feature.properties) {
-            layer.bindPopup(Object.keys(feature.properties).map(function (k) {
-              return k + ': ' + feature.properties[k]
-            }).join('<br />'), {
-              maxHeight: 200
+          } else if (feature.properties) {
+            // Default content
+            const borderStyle = ' style="border: 1px solid black; border-collapse: collapse;"'
+            let html = '<table' + borderStyle + '>'
+            html += '<tr' + borderStyle + '><th' + borderStyle + '>Property</th><th>Value</th></tr>'
+            html += Object.keys(feature.properties)
+            .filter(k => feature.properties[k] !== null && feature.properties[k] !== undefined)
+            .map(k => '<tr style="border: 1px solid black; border-collapse: collapse;"><th' + borderStyle + '>' + k + '</th><th>' + feature.properties[k] + '</th></tr>')
+            .join('')
+            html += '</table>'
+            // Configured or default style
+            layer.bindPopup(html, this.configuration.featureStyle || {
+              maxHeight: 400,
+              maxWidth: 400
             })
           }
         },
@@ -31,9 +46,8 @@ let geojsonLayersMixin = {
           // Custom defined function in component ?
           if (typeof this.getFeatureStyle === 'function') {
             return this.getFeatureStyle(feature)
-          }
-          // Configured or default style
-          else {
+          } else {
+            // Configured or default style
             return this.configuration.featureStyle || {
               opacity: 1,
               radius: 6,
@@ -47,9 +61,8 @@ let geojsonLayersMixin = {
           // Custom defined function in component ?
           if (typeof this.getPointMarker === 'function') {
             return this.getPointMarker(feature, latlng)
-          }
-          // Configured or default style
-          else {
+          } else {
+            // Configured or default style
             const markerStyle = this.configuration.pointStyle
             if (markerStyle) {
               let icon = markerStyle.icon
@@ -57,12 +70,10 @@ let geojsonLayersMixin = {
               if (icon) {
                 icon = L[icon.type](icon.options)
                 return L[markerStyle.type](latlng, { icon })
-              }
-              else {
+              } else {
                 return L[markerStyle.type](latlng, markerStyle.options)
               }
-            }
-            else {
+            } else {
               return L.marker(latlng)
             }
           }

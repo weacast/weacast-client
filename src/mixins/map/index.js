@@ -8,12 +8,12 @@ import measure from './mixin.measure'
 import scalebar from './mixin.scalebar'
 
 export default {
-    base,
-    baseLayers,
-    geojsonLayers,
-    forecastLayers,
-    fileLayers,
-    fullscreen,
-    measure,
-    scalebar
+  base,
+  baseLayers,
+  geojsonLayers,
+  forecastLayers,
+  fileLayers,
+  fullscreen,
+  measure,
+  scalebar
 }

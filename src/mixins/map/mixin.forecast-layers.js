@@ -3,7 +3,7 @@ import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
 import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
 import moment from 'moment'
 import 'iso8601-js-period/iso8601.js'
-import * as layers from '../../layers'
+import '../../layers'
 
 import store from '../store'
 
@@ -32,23 +32,21 @@ let forecastLayersMixin = {
         resolution: [2 * this.forecastModel.resolution[0], 2 * this.forecastModel.resolution[1]]
       }
 
-      this.forecastLayers.forEach(layer => {
-        this.map.removeLayer(layer)
-      })
+      this.forecastLayers.forEach(layer => this.map.removeLayer(layer))
       this.forecastLayers = []
       this.configuration.forecastLayers.forEach(layerConfig => {
         let layer = new L.Weacast[layerConfig.type](this.api, layerConfig.options)
         this.map.addLayer(layer)
         // Should come last so that we do not trigger multiple updates of data
         layer.setForecastModel(visualModel)
+        this.forecastLayers.push(layer)
       })
     },
-    setCurrentTime(datetime) {
+    setCurrentTime (datetime) {
       // String or milliseconds
       if (typeof datetime === 'string' || Number.isInteger(datetime)) {
         this.currentTime = moment.utc(datetime)
-      }
-      else {
+      } else {
         this.currentTime = datetime
       }
       this.$emit('currentTimeChanged', this.currentTime)

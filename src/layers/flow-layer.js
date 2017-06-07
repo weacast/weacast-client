@@ -11,7 +11,8 @@ let FlowLayer = ForecastLayer.extend({
       displayOptions: {
         velocityType: 'Wind',
         position: 'bottomright',
-        emptyString: 'No wind data'
+        emptyString: 'No wind data',
+        angleConvention: 'bearingCW'
       },
       // FIXME : make this dynamic
       minVelocity: 3,           // used to align color scale

@@ -1,5 +1,6 @@
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import store from '../store'
 // Fix to make Leaflet assets be correctly inserted by webpack
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -7,8 +8,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: require('leaflet/dist/images/marker-icon.png'),
   shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 })
-
-import store from '../store'
 
 let baseMixin = {
   methods: {
