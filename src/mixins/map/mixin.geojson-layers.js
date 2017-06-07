@@ -22,6 +22,7 @@ let geojsonLayersMixin = {
     getGeoJsonOptions () {
       let geojsonOptions = {
         onEachFeature: (feature, layer) => {
+          const featureStyle = this.configuration.featureStyle
           // Custom defined function in component ?
           if (typeof this.getFeaturePopup === 'function') {
             layer.bindPopup(this.getFeaturePopup(feature, layer))
@@ -30,16 +31,35 @@ let geojsonLayersMixin = {
             const borderStyle = ' style="border: 1px solid black; border-collapse: collapse;"'
             let html = '<table' + borderStyle + '>'
             html += '<tr' + borderStyle + '><th' + borderStyle + '>Property</th><th>Value</th></tr>'
-            html += Object.keys(feature.properties)
+            let properties = Object.keys(feature.properties)
+            // Custom list given ?
+            if (featureStyle && featureStyle.popup && featureStyle.popup.properties) {
+              properties = featureStyle.popup.properties
+            }
+            html += properties
             .filter(k => feature.properties[k] !== null && feature.properties[k] !== undefined)
             .map(k => '<tr style="border: 1px solid black; border-collapse: collapse;"><th' + borderStyle + '>' + k + '</th><th>' + feature.properties[k] + '</th></tr>')
             .join('')
             html += '</table>'
             // Configured or default style
-            layer.bindPopup(html, this.configuration.featureStyle || {
-              maxHeight: 400,
-              maxWidth: 400
-            })
+            if (featureStyle && featureStyle.popup && featureStyle.popup.options) {
+              layer.bindPopup(html, featureStyle.popup.options)
+            }
+            else {
+              layer.bindPopup(html, {
+                maxHeight: 400,
+                maxWidth: 400
+              })
+            }
+          }
+          // Custom defined function in component ?
+          if (typeof this.getFeatureTooltip === 'function') {
+            layer.bindTooltip(this.getFeatureTooltip(feature, layer))
+          } else if (featureStyle && featureStyle.tooltip && featureStyle.tooltip.property && feature.properties) {
+            let tooltip = feature.properties[featureStyle.tooltip.property]
+            if (tooltip) {
+              layer.bindTooltip(tooltip, featureStyle.tooltip.options || { permanent: true })
+            }
           }
         },
         style: (feature) => {
