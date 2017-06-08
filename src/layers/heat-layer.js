@@ -5,12 +5,13 @@ import { ForecastLayer } from './forecast-layer'
 let HeatLayer = ForecastLayer.extend({
 
   initialize (api, options) {
-    let layer = new HeatmapOverlay({
+    // Merge options with default for undefined ones
+    const layerOptions = Object.assign({
       // radius should be small ONLY if scaleRadius is true (or small radius is intended)
       // if scaleRadius is false it will be the constant radius used in pixels
-      radius: options.radius || 0.3,
-      minOpacity: options.minOpacity || 0,
-      maxOpacity: options.maxOpacity || 0.8,
+      radius: 0.3,
+      minOpacity: 0,
+      maxOpacity: 0.8,
       // scales the radius based on map zoom
       scaleRadius: true,
       // custom gradient colors
@@ -32,7 +33,8 @@ let HeatLayer = ForecastLayer.extend({
       lngField: 'lng',
       // which field name in your data represents the data value - default "value"
       valueField: 'value'
-    })
+    }, options)
+    let layer = new HeatmapOverlay(layerOptions)
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
     // Format in leaflet-heatmap layer data model
     this.heat = {

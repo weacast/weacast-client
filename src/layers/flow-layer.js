@@ -6,21 +6,24 @@ import { ForecastLayer } from './forecast-layer'
 let FlowLayer = ForecastLayer.extend({
 
   initialize (api, options) {
-    let layer = L.velocityLayer({
+    // Merge options with default for undefined ones
+    const layerOptions = Object.assign({
       displayValues: true,
       displayOptions: {
         velocityType: 'Wind',
         position: 'bottomright',
         emptyString: 'No wind data',
-        angleConvention: 'bearingCW'
+        angleConvention: 'bearingCW',
+        speedUnit: 'kt'
       },
       // FIXME : make this dynamic
       minVelocity: 3,           // used to align color scale
       maxVelocity: 20,          // used to align color scale
-      velocityScale: 0.005,     // modifier for particle animations, arbitrarily defaults to 0.005
+      velocityScale: 0.01,     // modifier for particle animations, arbitrarily defaults to 0.005
       colorScale: null,
       data: null                // data will be requested on-demand
-    })
+    }, options)
+    let layer = L.velocityLayer(layerOptions)
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
 
     // Format in leaflet-velocity layer data model
