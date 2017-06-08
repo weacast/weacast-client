@@ -1,8 +1,8 @@
 import L from 'leaflet'
-import 'leaflet.markercluster/dist/leaflet.markercluster.js'
+import 'leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
-import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import 'leaflet-timedimension'
 
 import store from '../store'
 
@@ -44,8 +44,7 @@ let geojsonLayersMixin = {
             // Configured or default style
             if (featureStyle && featureStyle.popup && featureStyle.popup.options) {
               layer.bindPopup(html, featureStyle.popup.options)
-            }
-            else {
+            } else {
               layer.bindPopup(html, {
                 maxHeight: 400,
                 maxWidth: 400

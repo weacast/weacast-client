@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import 'leaflet-fullscreen/dist/Leaflet.fullscreen.js'
+import 'leaflet-fullscreen'
 import 'leaflet-fullscreen/dist/leaflet.fullscreen.css'
 
 import store from '../store'

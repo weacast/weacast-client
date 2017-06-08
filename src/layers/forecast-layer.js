@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import 'leaflet-timedimension'
 
 let ForecastLayer = L.TimeDimension.Layer.extend({
 

@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import 'leaflet-velocity/dist/leaflet-velocity.js'
+import 'leaflet-velocity'
 import 'leaflet-velocity/dist/leaflet-velocity.css'
 import { ForecastLayer } from './forecast-layer'
 

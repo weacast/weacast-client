@@ -1,7 +1,7 @@
 // A hook that logs service method before, after and error
 import logger from 'loglevel'
 
-export function log(hook) {
+export function log (hook) {
   let message = `${hook.type}: ${hook.path} - Method: ${hook.method}`
 
   if (hook.type === 'error') {

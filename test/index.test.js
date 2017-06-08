@@ -3,16 +3,19 @@ import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import 'jsdom-global/register'
 import fetch from 'isomorphic-fetch'
+import jQuery from 'jquery'
 import { weacast } from '../src'
 
 window.fetch = fetch
+window.jQuery = window.$ = jQuery
+global.jQuery = global.$ = jQuery
+console.log(jQuery)
 
 describe('weacast-client', () => {
   let app
 
   before(() => {
     chailint(chai, util)
-
     app = weacast()
   })
 
