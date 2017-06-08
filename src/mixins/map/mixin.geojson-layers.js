@@ -8,16 +8,16 @@ import store from '../store'
 
 let geojsonLayersMixin = {
   methods: {
-    addGeoJson (geojson, geojsonOptions) {
-      return this.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()))
+    addGeoJson (geojson, name, geojsonOptions) {
+      return this.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), name)
     },
-    addGeoJsonCluster (geojson, geojsonOptions) {
+    addGeoJsonCluster (geojson, name, geojsonOptions) {
       let cluster = L.markerClusterGroup()
       cluster.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()))
-      return this.addLayer(cluster)
+      return this.addLayer(cluster, name)
     },
-    addTimedGeoJson (geojson, timeOptions, geojsonOptions) {
-      return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), timeOptions))
+    addTimedGeoJson (geojson, name, timeOptions, geojsonOptions) {
+      return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), timeOptions), name)
     },
     getGeoJsonOptions () {
       let geojsonOptions = {

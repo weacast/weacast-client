@@ -32,11 +32,11 @@ let forecastLayersMixin = {
         resolution: [2 * this.forecastModel.resolution[0], 2 * this.forecastModel.resolution[1]]
       }
 
-      this.forecastLayers.forEach(layer => this.map.removeLayer(layer))
+      this.forecastLayers.forEach(layer => this.removeLayer(layer))
       this.forecastLayers = []
       this.configuration.forecastLayers.forEach(layerConfig => {
         let layer = new L.Weacast[layerConfig.type](this.api, layerConfig.options)
-        this.map.addLayer(layer)
+        this.addLayer(layer, layerConfig.name)
         // Should come last so that we do not trigger multiple updates of data
         layer.setForecastModel(visualModel)
         this.forecastLayers.push(layer)

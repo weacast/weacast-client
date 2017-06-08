@@ -20,14 +20,26 @@ let baseMixin = {
     },
     removeLayer (layer) {
       if (this.map.hasLayer(layer)) {
+        this.overlayLayersControl.removeLayer(layer)
         this.map.removeLayer(layer)
+        this.checkOverlayLayersControlVisibility()
       }
     },
-    addLayer (layer) {
+    addLayer (layer, name) {
       if (!this.map.hasLayer(layer)) {
         this.map.addLayer(layer)
+        this.overlayLayersControl.addOverlay(layer, name)
+        this.checkOverlayLayersControlVisibility()
       }
       return layer
+    },
+    checkOverlayLayersControlVisibility () {
+      // Hidden while nothing has been loaded, default state
+      this.overlayLayersControl.getContainer().style.visibility = 'hidden'
+      this.map.eachLayer(_ => {
+        // We know there is at least one layer to display
+        this.overlayLayersControl.getContainer().style.visibility = 'visible'
+      })
     }
   },
   created () {
@@ -37,8 +49,12 @@ let baseMixin = {
   mounted () {
     // Initialize the map now the DOM is ready
     this.map = L.map('map').setView([46, 1.5], 5)
+    // Add empty basic overlays control
+    this.overlayLayersControl = L.control.layers({}, {})
+    this.controls.push(this.overlayLayersControl)
     this.$on('mapReady', _ => {
       this.setupControls()
+      this.checkOverlayLayersControlVisibility()
     })
   },
   beforeDestroy () {
