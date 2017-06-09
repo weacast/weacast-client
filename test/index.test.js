@@ -3,13 +3,16 @@ import chai, { util, expect } from 'chai'
 import chailint from 'chai-lint'
 import 'jsdom-global/register'
 import fetch from 'isomorphic-fetch'
-import jQuery from 'jquery'
-import { weacast } from '../src'
+// Importing the whole weacast module makes Leaflet time dimension fail due to jQuery not be defined
+// The following workaround, although presented as working on the internet, does not help
+// import jQuery from 'jquery'
+// window.jQuery = window.$ = jQuery
+// global.jQuery = global.$ = jQuery
+// import { weacast } from '../src'
+// For now simply testing the API
+import weacast from '../src/api'
 
 window.fetch = fetch
-window.jQuery = window.$ = jQuery
-global.jQuery = global.$ = jQuery
-console.log(jQuery)
 
 describe('weacast-client', () => {
   let app
