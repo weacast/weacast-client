@@ -1,5 +1,8 @@
 # Change Log
 
+## [v0.2.1](https://github.com/weacast/weacast-client/tree/v0.2.1) (2017-06-09)
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v0.2.0...v0.2.1)
+
 ## [v0.2.0](https://github.com/weacast/weacast-client/tree/v0.2.0) (2017-06-09)
 
 
