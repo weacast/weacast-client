@@ -7,7 +7,6 @@ import store from '../store'
 let baseLayersMixin = {
   data () {
     return {
-      baseLayers: []
     }
   },
   methods: {
@@ -16,6 +15,10 @@ let baseLayersMixin = {
         this.baseLayers.push(L[baseLayer.type](...baseLayer.arguments))
       })
     }
+  },
+  created () {
+    // This is the right place to declare private members because Vue has already processed observed data
+    this.baseLayers = []
   },
   mounted () {
     this.setupBaseLayers()

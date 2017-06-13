@@ -10,8 +10,7 @@ import store from '../store'
 let forecastLayersMixin = {
   data () {
     return {
-      currentTime: null,
-      forecastLayers: []
+      currentTime: null
     }
   },
   watch: {
@@ -55,6 +54,10 @@ let forecastLayersMixin = {
         this.map.timeDimension.setCurrentTime(this.currentTime.valueOf())
       }
     }
+  },
+  created () {
+    // This is the right place to declare private members because Vue has already processed observed data
+    this.forecastLayers = []
   },
   mounted () {
     let timeDimension = L.timeDimension({})
