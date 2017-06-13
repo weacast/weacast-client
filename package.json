@@ -1,7 +1,7 @@
 {
   "name": "weacast-client",
   "description": "Basic utilitiess to support Weacast-based clients",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "homepage": "https://github.com/weacast/weacast-client",
   "main": "lib/",
   "keywords": [
