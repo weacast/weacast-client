@@ -1,4 +1,4 @@
-import { ForecastLayer, FlowLayer, HeatLayer } from './layers'
+import { ForecastLayer, FlowLayer, HeatLayer, ColorLayer } from './layers'
 import weacast from './api'
 import MixinStore from './mixins/store'
 import mixins from './mixins'
@@ -11,7 +11,7 @@ export * as hooks from './hooks'
 // Tracked here : https://github.com/babel/babel/issues/2877
 import { log, emit } from './hooks'
 
-export { ForecastLayer, FlowLayer, HeatLayer }
+export { ForecastLayer, FlowLayer, HeatLayer, ColorLayer }
 export { MixinStore }
 export { mixins }
 export { weacast }
