@@ -33,8 +33,13 @@ let geojsonLayersMixin = {
             html += '<tr' + borderStyle + '><th' + borderStyle + '>Property</th><th>Value</th></tr>'
             let properties = Object.keys(feature.properties)
             // Custom list given ?
-            if (featureStyle && featureStyle.popup && featureStyle.popup.properties) {
-              properties = featureStyle.popup.properties
+            if (featureStyle && featureStyle.popup) {
+              if (featureStyle.popup.properties) {
+                properties = featureStyle.popup.properties
+              }
+              if (featureStyle.popup.excludedProperties) {
+                properties = properties.filter(property => !featureStyle.popup.excludedProperties.includes(property))
+              }
             }
             html += properties
             .filter(k => feature.properties[k] !== null && feature.properties[k] !== undefined)
