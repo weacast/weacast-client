@@ -13,16 +13,6 @@ export default function weacast () {
     logger.setLevel('info')
   }
   api.configure(hooks())
-  api.configure(feathers.authentication({
-    storage: window.localStorage,
-    path: config.apiPath + '/authentication'
-  }))
-
-  // This avoid managing the API path before each service name
-  api.getService = function (path) {
-    return api.service(config.apiPath + '/' + path)
-  }
-
   if (config.transport === 'web-socket') {
     let socket = io(window.location.origin, {
       transports: ['websocket'],
@@ -31,6 +21,15 @@ export default function weacast () {
     api.configure(feathers.socketio(socket))
   } else {
     api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
+  }
+  api.configure(feathers.authentication({
+    storage: window.localStorage,
+    path: config.apiPath + '/authentication'
+  }))
+
+  // This avoid managing the API path before each service name
+  api.getService = function (path) {
+    return api.service(config.apiPath + '/' + path)
   }
 
   return api
