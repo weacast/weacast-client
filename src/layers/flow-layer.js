@@ -1,6 +1,6 @@
 import L from 'leaflet'
-import 'weacast-leaflet-velocity'
-import 'weacast-leaflet-velocity/dist/leaflet-velocity.css'
+import 'leaflet-velocity'
+import 'leaflet-velocity/dist/leaflet-velocity.css'
 import { ForecastLayer } from './forecast-layer'
 
 let FlowLayer = ForecastLayer.extend({
