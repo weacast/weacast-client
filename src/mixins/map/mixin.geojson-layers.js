@@ -19,6 +19,20 @@ let geojsonLayersMixin = {
     addTimedGeoJson (geojson, name, timeOptions, geojsonOptions) {
       return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), timeOptions), name)
     },
+    createMarkerFromStyle (latlng, markerStyle) {
+      if (markerStyle) {
+        let icon = markerStyle.icon
+        // Parse icon options to get icon object if any
+        if (icon) {
+          icon = L[icon.type](icon.options)
+          return L[markerStyle.type](latlng, { icon })
+        } else {
+          return L[markerStyle.type](latlng, markerStyle.options)
+        }
+      } else {
+        return L.marker(latlng)
+      }
+    },
     getGeoJsonOptions () {
       let geojsonOptions = {
         onEachFeature: (feature, layer) => {
@@ -87,19 +101,7 @@ let geojsonLayersMixin = {
             return this.getPointMarker(feature, latlng)
           } else {
             // Configured or default style
-            const markerStyle = this.configuration.pointStyle
-            if (markerStyle) {
-              let icon = markerStyle.icon
-              // Parse icon options to get icon object if any
-              if (icon) {
-                icon = L[icon.type](icon.options)
-                return L[markerStyle.type](latlng, { icon })
-              } else {
-                return L[markerStyle.type](latlng, markerStyle.options)
-              }
-            } else {
-              return L.marker(latlng)
-            }
+            return this.createMarkerFromStyle(latlng, this.configuration.pointStyle)
           }
         }
       }

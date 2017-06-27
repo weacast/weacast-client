@@ -32,7 +32,7 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
   },
 
   fetchAvailableTimes () {
-    if (!this.options.elements || this.options.elements.length === 0) return
+    if (!this.options.elements || this.options.elements.length === 0 || !this._timeDimension) return
     // We assume that if multiple elements all have the same forecast times because sharing the underlying forecast model
     return this.api.getService(this.forecastModel.name + '/' + this.options.elements[0]).find({
       query: {
