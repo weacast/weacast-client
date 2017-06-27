@@ -19,11 +19,12 @@ let baseMixin = {
       this.map.setView(new L.LatLng(latitude, longitude), zoomLevel || 12)
     },
     removeLayer (layer) {
+      this.overlayLayersControl.removeLayer(layer)
+      // If it was visible remove it from map
       if (this.map.hasLayer(layer)) {
-        this.overlayLayersControl.removeLayer(layer)
         this.map.removeLayer(layer)
-        this.checkOverlayLayersControlVisibility()
       }
+      this.checkOverlayLayersControlVisibility()
     },
     addLayer (layer, name) {
       if (!this.map.hasLayer(layer)) {
