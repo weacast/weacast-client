@@ -61,11 +61,11 @@
     "leaflet-heatmap": "^1.0.0",
     "leaflet-measure": "^2.1.7",
     "leaflet-timedimension": "^1.0.6",
+    "leaflet-velocity": "^1.2.2",
     "leaflet.markercluster": "^1.0.5",
     "loglevel": "^1.4.1",
     "socket.io-client": "^1.7.3",
-    "vue": "^2.3.3",
-    "weacast-leaflet-velocity": "^1.1.0"
+    "vue": "^2.3.3"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

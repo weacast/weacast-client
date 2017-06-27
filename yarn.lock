@@ -2632,6 +2632,10 @@ leaflet-timedimension@^1.0.6:
     jquery "1.x || 2.x"
     leaflet "~0.7.4 || ~1.0.0"
 
+leaflet-velocity@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/leaflet-velocity/-/leaflet-velocity-1.2.2.tgz#4188b74953c3a8e91b8d8ed698247bef5ae266bf"
+
 leaflet.markercluster@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/leaflet.markercluster/-/leaflet.markercluster-1.0.5.tgz#12fde61630f4eb3146d92b56a36fdff903d1e023"
@@ -3992,10 +3996,6 @@ verror@1.3.6:
 vue@^2.3.3:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.3.3.tgz#d1eaa8fde5240735a4563e74f2c7fead9cbb064c"
-
-weacast-leaflet-velocity@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/weacast-leaflet-velocity/-/weacast-leaflet-velocity-1.1.0.tgz#a096f4fcd4a3b3753a459146949e3c4fd39ad3bc"
 
 webidl-conversions@^3.0.0:
   version "3.0.1"
