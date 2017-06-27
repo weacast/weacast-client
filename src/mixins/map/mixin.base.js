@@ -27,7 +27,14 @@ let baseMixin = {
     },
     addLayer (layer, name) {
       if (!this.map.hasLayer(layer)) {
-        this.map.addLayer(layer)
+        // Check if layer is visible by default
+        let visible = true
+        if (layer.options.hasOwnProperty('visible')) {
+          visible = layer.options.visible
+        }
+        if (visible) {
+          this.map.addLayer(layer)
+        }
         this.overlayLayersControl.addOverlay(layer, name)
         this.checkOverlayLayersControlVisibility()
       }
@@ -36,7 +43,7 @@ let baseMixin = {
     checkOverlayLayersControlVisibility () {
       // Hidden while nothing has been loaded, default state
       this.overlayLayersControl.getContainer().style.visibility = 'hidden'
-      this.map.eachLayer(_ => {
+      this.overlayLayersControl._layers.forEach(_ => {
         // We know there is at least one layer to display
         this.overlayLayersControl.getContainer().style.visibility = 'visible'
       })
