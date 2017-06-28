@@ -13,14 +13,14 @@ export default function weacast () {
     logger.setLevel('info')
   }
   api.configure(hooks())
-  if (config.transport === 'web-socket') {
+  if (config.transport === 'http') {
+    api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
+  } else {
     let socket = io(window.location.origin, {
       transports: ['websocket'],
       path: config.apiPath + 'ws'
     })
     api.configure(feathers.socketio(socket))
-  } else {
-    api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
   }
   api.configure(feathers.authentication({
     storage: window.localStorage,
