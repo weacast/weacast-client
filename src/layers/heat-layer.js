@@ -55,12 +55,13 @@ let HeatLayer = ForecastLayer.extend({
     for (let j = 0; j < this.forecastModel.size[1]; j++) {
       for (let i = 0; i < this.forecastModel.size[0]; i++) {
         let value = heatValues[i + j * this.forecastModel.size[0]]
-        // Offset by pixel center
-        let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0] + 0.5 * this.forecastModel.resolution[0])
-        let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1] + 0.5 * this.forecastModel.resolution[1])
+        let lng = this.forecastModel.origin[0] + lonDirection * (i * this.forecastModel.resolution[0])
+        let lat = this.forecastModel.origin[1] + latDirection * (j * this.forecastModel.resolution[1])
+        // Take care that some models express longitude in [0,360] and not [-180,180], so unify range here
+        let latLng = L.latLng(lat, lng).wrap()
         this.heat.data.push({
-          lat,
-          lng,
+          lat: latLng.lat,
+          lng: latLng.lng,
           value
         })
       }
