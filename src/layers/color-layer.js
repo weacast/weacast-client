@@ -34,7 +34,8 @@ let ColorLayer = ForecastLayer.extend({
       nRows: model.size[1],
       xllCorner: model.bounds[0],
       yllCorner: model.bounds[1],
-      cellSize: model.resolution[0]
+      cellXSize: model.resolution[0],
+      cellYSize: model.resolution[1]
     }
     ForecastLayer.prototype.setForecastModel.call(this, model)
   }
