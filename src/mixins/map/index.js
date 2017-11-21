@@ -6,6 +6,7 @@ import fileLayers from './mixin.file-layers'
 import fullscreen from './mixin.fullscreen'
 import measure from './mixin.measure'
 import scalebar from './mixin.scalebar'
+import legend from './mixin.legend'
 
 export default {
   base,
@@ -15,5 +16,6 @@ export default {
   fileLayers,
   fullscreen,
   measure,
-  scalebar
+  scalebar,
+  legend
 }
