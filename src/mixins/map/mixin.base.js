@@ -2,7 +2,6 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import store from '../store'
 
-import { FlowLayer } from '../../layers/flow-layer'
 // Fix to make Leaflet assets be correctly inserted by webpack
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.mergeOptions({
@@ -13,54 +12,8 @@ L.Icon.Default.mergeOptions({
 
 let baseMixin = {
   methods: {
-    setUpLegend(){ //set up legend menu to map speed with color
-        this.controls.forEach(control => {if(control.options.controlButton && control.options.controlButton.title == 'Legend'){
-        let FlowLayerObj = new FlowLayer()
-        let colors = FlowLayerObj._baseLayer.options.colorScale
-        let min = FlowLayerObj._baseLayer.options.minVelocity
-        let max = FlowLayerObj._baseLayer.options.maxVelocity
-        let colorIndexForSpeed =[]
-        colors.indexFor = function (m) {  // map velocity speed to a style
-          return Math.max(0, Math.min((colors.length - 1),
-            Math.round((m - min) / (max - min) * (colors.length - 1))));
-        }
-         for(let j=0; j<=max; j++){
-           colorIndexForSpeed.push(colors.indexFor(j))
-         }
-        let mpsToKnot = function(mps){
-          return mps*1.94384
-        }
-          let labelsForMps = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background: white">MPS</span> ']
-          let labelsForKnot = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:white">KT</span> ']
-          for (var i = 0; i < colors.length; i++) {
-            labelsForMps.push(
-              '<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' + colors[i]+ '">'+ colorIndexForSpeed.indexOf(i) +'</span> '
-            )
-            labelsForKnot.push(
-              '<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' + colors[i]+ '">'+ (mpsToKnot(colorIndexForSpeed.indexOf(i))).toFixed(0) +'</span> '
-            )
-          }
-          let flag = 0
-          let Mps ='<div title="Click to convert speed from Mps to Knot" style="position:absolute; cursor:pointer;">'+ labelsForMps.join('<br>') +'</div>'
-          let Knot ='<div title="Click to convert speed from Knot to Mps" style="position:absolute; cursor:pointer;">'+ labelsForKnot.join('<br>') +'</div>'
-          control._container.classList.remove('legend-container')
-          control._container.innerHTML = Knot
-          control._container.addEventListener('click',function(e){
-              if(flag==0)
-                {
-                  control._container.innerHTML=Mps
-                  flag=1
-                }
-              else{
-                control._container.innerHTML=Knot
-                  flag=0
-              }
-          })
-      }})
-    },
     setupControls () {
       this.controls.forEach(control => control.addTo(this.map))
-      this.setUpLegend()
       this.$emit('controlsReady')
     },
     center (longitude, latitude, zoomLevel) {
