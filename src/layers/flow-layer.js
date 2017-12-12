@@ -56,11 +56,26 @@ let FlowLayer = ForecastLayer.extend({
     }
   },
 
+  getColorMap() {
+    let colorMap = []
+    let colors = this._baseLayer.options.colorScale
+    let min = this._baseLayer.options.minVelocity
+    let max = this._baseLayer.options.maxVelocity
+    for (let i = 0; i < colors.length; i++) {
+      colorMap.push({
+        value: min + i * (max - min) / colors.length,
+        color: colors[i]
+      })
+    }
+    return colorMap
+  },
+
   setData (data) {
     if (data.length > 1) {
       this.uFlow.data = data[0].data
       this.vFlow.data = data[1].data
       this._baseLayer.setData([this.uFlow, this.vFlow])
+      ForecastLayer.prototype.setData.call(this, data)
     }
   },
 

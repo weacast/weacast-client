@@ -13,11 +13,25 @@ let ColorLayer = ForecastLayer.extend({
     // Merge options with default for undefined ones
     const layerOptions = Object.assign({
       interpolate: true,
-      colorMap: 'Spectral',
+      colorMap: 'OrRd',
       opacity: 0.25
     }, options)
     let layer = L.canvasLayer.scalarField(null, layerOptions)
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
+  },
+
+  getColorMap() {
+    let colorMap = []
+    let colors = chroma.brewer[this._baseLayer.options.colorMap]
+    let min, max
+    [min, max] = this._baseLayer.options.color.domain()
+    for (let i = 0; i < colors.length; i++) {
+      colorMap.push({
+        value: min + i * (max - min) / colors.length,
+        color: colors[i]
+      })
+    }
+    return colorMap
   },
 
   setData (data) {
@@ -25,6 +39,7 @@ let ColorLayer = ForecastLayer.extend({
     this.field.zs = data[0].data
     // To be reactive directly set data after download
     this._baseLayer.setData(new L.ScalarField(this.field))
+    ForecastLayer.prototype.setData.call(this, data)
   },
 
   setForecastModel (model) {

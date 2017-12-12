@@ -5,63 +5,63 @@ import store from '../store'
 
 let legendMixin = {
    methods: {
-    setUpLegend(colors,min,max){ //set up legend menu to map speed with color
-        this.controls.forEach(control => {if(control.options.controlButton && control.options.controlButton.title == 'Legend'){
-        let colorIndexForSpeed =[]
-        colors.indexFor = function (m) {  // map velocity speed to a style
-          return Math.max(0, Math.min((colors.length - 1),
-          Math.round((m - min) / (max - min) * (colors.length - 1))));
-        }
-        for(let j=0; j<=max; j++){
-          colorIndexForSpeed.push(colors.indexFor(j))
-        }        
-        let mpsToKnot = function(mps){
-          return mps*1.94384
-        }
-        let labelsForMps = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background: white">MPS</span> ']
-        let labelsForKnot = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:white">KT</span> ']
-        for (var i = 0; i < colors.length; i++) {
-          labelsForMps.push(
-            '<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' + colors[i]+ '">'+ colorIndexForSpeed.indexOf(i) +'</span> '
-          )
-        labelsForKnot.push('<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' + colors[i]+ '">'+ (mpsToKnot(colorIndexForSpeed.indexOf(i))).toFixed(0) +'</span> ')
-         }
-        let flag = 0
-        let Mps ='<div title="Click to convert speed from Mps to Knot" style="position:absolute; cursor:pointer;">'+ labelsForMps.join('<br>') +'</div>'
-        let Knot ='<div title="Click to convert speed from Knot to Mps" style="position:absolute; cursor:pointer;">'+ labelsForKnot.join('<br>') +'</div>'
-        control._container.classList.remove('legend-container')
-        control._container.innerHTML = Knot
-        control._container.addEventListener('click',function(e){
-          if(flag==0)
-            {
-              control._container.innerHTML = Mps
-              flag=1
-            }
-          else{
-            control._container.innerHTML = Knot
-            flag=0
-          }
-        })
-       }})
+    getLabelsForUnit(colorMap, unit, transform) {
+      let labels = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background: white">' + unit.toUpperCase() + '</span> ']
+      for (var i = 0; i < colorMap.length; i++) {
+        labels.push('<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' +
+          colorMap[i].color + '">' + transform(colorMap[i].value).toFixed(0) +'</span> ')
+      }
+      return labels
+    },
+    getHtmlForUnit(colorMap, unit, transform = value => value) {
+      let labelsForUnit = this.getLabelsForUnit(colorMap, unit, transform)
+      return '<div title="Click to convert speed to '+ unit + '" style="position:absolute; cursor:pointer;">'+ labelsForUnit.join('<br>') +'</div>'
+    },
+    setColorMap(colorMap) {
+      // Build legend/labels for each unit
+      let html = [
+        this.getHtmlForUnit(colorMap, 'm/s'),
+        this.getHtmlForUnit(colorMap, 'kt', value => value * 1.94384)
+      ]
+      let currentUnitIndex = 0
+      this.legendControl._container.innerHTML = html[currentUnitIndex]
+      this.legendControl._container.addEventListener('click', _ => {
+        currentUnitIndex = (currentUnitIndex + 1) % html.length
+        this.legendControl._container.innerHTML = html[currentUnitIndex]
+      })
+     },
+     show() {
+      this.legendControl.addTo(this.map)
+      let colorMap = this.forecastLayer.getColorMap()
+      // Nothing to display ?
+      if (colorMap.length === 0) {
+        this.hide()
+      } else {
+        this.setColorMap(colorMap)
+      }
+     },
+     hide () {
+      this.forecastLayer.off('data', this.show)
+      this.forecastLayer = null
+      this.legendControl.remove()
      }
   },
   mounted () {
-    let legendControl = new L.Control.Legend({ 
-        position: 'topleft',
-        collapsed: true,
-        controlButton: {
-            title: "Legend"
-        }
-     })
-    this.controls.push(legendControl)          
+    this.legendControl = new L.Control.Legend({ 
+      position: 'topleft'
+    })
+    //this.controls.push(this.legendControl)          
     this.map.on('layeradd', event => {
-      if(event.layer._baseLayer){
-        let colors = event.layer._baseLayer.options.colorScale
-        let min = event.layer._baseLayer.options.minVelocity
-        let max = event.layer._baseLayer.options.maxVelocity
-        if(colors && min && max){
-        this.setUpLegend(colors,min,max)
-        }
+      // We only manage forecast layers
+      if (event.layer instanceof L.Weacast.ForecastLayer) {
+        this.forecastLayer = event.layer
+        // We need to wait until data is here because it is require to get color map
+        this.forecastLayer.on('data', this.show)
+      }
+    })
+    this.map.on('layerremove', event => {
+      if (this.forecastLayer === event.layer) {
+        this.hide()
       }
     })
   }

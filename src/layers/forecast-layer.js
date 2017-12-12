@@ -65,7 +65,8 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
   },
 
   setData (data) {
-    // To be implemented
+    // To be overriden, call ancestor to send event
+    this.fire('data', data)
   },
 
   fetchData () {

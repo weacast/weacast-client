@@ -44,6 +44,24 @@ let HeatLayer = ForecastLayer.extend({
     }
   },
 
+  getColorMap() {
+    let colorMap = []
+    let colors = this._baseLayer._heatmap._config.gradient || this._baseLayer._heatmap._config.defaultGradient
+    let values = Object.keys(colors).sort()
+    let min = this.heat.min
+    let max = this.heat.max
+    for (let i = 0; i < values.length; i++) {
+      // Gradient is given in relative, ie in [0, 1]
+      // we need to rescale toward [min, max]
+      const value = min + values[i] * (max - min)
+      colorMap.push({
+        value,
+        color: colors[values[i]]
+      })
+    }
+    return colorMap
+  },
+
   setData (data) {
     this.heat.min = data[0].minValue
     this.heat.max = data[0].maxValue
@@ -68,6 +86,7 @@ let HeatLayer = ForecastLayer.extend({
     }
     // To be reactive directly set data after download
     this._baseLayer.setData(this.heat)
+    ForecastLayer.prototype.setData.call(this, data)
   }
 })
 
