@@ -68,7 +68,7 @@
     "leaflet-velocity": "^1.2.2",
     "leaflet.markercluster": "^1.0.5",
     "loglevel": "^1.4.1",
-    "socket.io-client": "^1.7.3",
+    "socket.io-client": "^2.0.4",
     "vue": "^2.3.3"
   },
   "devDependencies": {
