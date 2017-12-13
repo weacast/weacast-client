@@ -1,5 +1,16 @@
 # Change Log
 
+## [v0.4.0](https://github.com/weacast/weacast-client/tree/v0.4.0) (2017-12-13)
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v0.3.0...v0.4.0)
+
+**Closed issues:**
+
+- Longitude wrapping and color layer [\#1](https://github.com/weacast/weacast-client/issues/1)
+
+**Merged pull requests:**
+
+- Legend menu control to map wind speed to color [\#2](https://github.com/weacast/weacast-client/pull/2) ([eeshamkohli](https://github.com/eeshamkohli))
+
 ## [v0.3.0](https://github.com/weacast/weacast-client/tree/v0.3.0) (2017-06-30)
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v0.2.4...v0.3.0)
 
