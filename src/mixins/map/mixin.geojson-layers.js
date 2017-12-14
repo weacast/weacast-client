@@ -1,9 +1,4 @@
 import L from 'leaflet'
-import 'leaflet.markercluster'
-import 'leaflet.markercluster/dist/MarkerCluster.css'
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
-import 'leaflet-timedimension'
-
 import store from '../store'
 
 let geojsonLayersMixin = {

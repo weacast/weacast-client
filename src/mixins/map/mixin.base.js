@@ -1,5 +1,12 @@
 import L from 'leaflet'
+import lodash from 'lodash'
 import 'leaflet/dist/leaflet.css'
+// This ensure we have all required plugins
+import 'leaflet.markercluster'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import 'leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js'
+import 'leaflet-timedimension'
 import store from '../store'
 
 // Fix to make Leaflet assets be correctly inserted by webpack
@@ -15,6 +22,34 @@ let baseMixin = {
     setupControls () {
       this.controls.forEach(control => control.addTo(this.map))
       this.$emit('controlsReady')
+    },
+    createLayer (layerConfiguration) {
+      // Transform from string to actual objects when required in some of the layer options
+      ['crs', 'rendererFactory'].forEach(option => {
+        // Find the right argument holding the option
+        let options = lodash.find(layerConfiguration.arguments, argument => typeof lodash.get(argument, option) === 'string')
+        if (options) {
+          // Jump from string to object, eg { crs: 'CRS.EPSGXXX' } will become { crs: L.CRS.EPSGXXX }
+          lodash.set(options, option, lodash.get(L, lodash.get(options, option)))
+        }
+      })
+      let type = layerConfiguration.type
+      // Specific case of timedimension layer where we first need to create an underlying WMS layer
+      if (layerConfiguration.type === 'timeDimension.layer.wms') {
+        type = 'tileLayer.wms'
+      }
+      let layer = lodash.get(L, type)(...layerConfiguration.arguments)
+      // Specific case of timedimension layer
+      if (layerConfiguration.type === 'timeDimension.layer.wms') {
+        return L.timeDimension.layer.wms(layer)
+      } else {
+        return layer
+      }
+    },
+    setupOverlayLayers () {
+      this.configuration.overlayLayers.forEach(overlayLayer => {
+        this.overlaysLayers[overlayLayer.name] = this.createLayer(overlayLayer)
+      })
     },
     center (longitude, latitude, zoomLevel) {
       this.map.setView(new L.LatLng(latitude, longitude), zoomLevel || 12)
@@ -56,12 +91,14 @@ let baseMixin = {
   created () {
     // This is the right place to declare private members because Vue has already processed observed data
     this.controls = []
+    this.overlaysLayers = {}
   },
   mounted () {
     // Initialize the map now the DOM is ready
     this.map = L.map('map').setView([46, 1.5], 5)
-    // Add empty basic overlays control
-    this.overlayLayersControl = L.control.layers({}, {})
+    this.setupOverlayLayers()
+    // Add basic overlays control
+    this.overlayLayersControl = L.control.layers({}, this.overlaysLayers)
     this.controls.push(this.overlayLayersControl)
     this.$on('mapReady', _ => {
       this.setupControls()

@@ -1,7 +1,6 @@
 import L from 'leaflet'
 import 'leaflet-basemaps/L.Control.Basemaps.js'
 import 'leaflet-basemaps/L.Control.Basemaps.css'
-
 import store from '../store'
 
 let baseLayersMixin = {
@@ -12,7 +11,7 @@ let baseLayersMixin = {
   methods: {
     setupBaseLayers () {
       this.configuration.baseLayers.forEach(baseLayer => {
-        this.baseLayers.push(L[baseLayer.type](...baseLayer.arguments))
+        this.baseLayers.push(this.createLayer(baseLayer))
       })
     }
   },
