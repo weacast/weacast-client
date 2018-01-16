@@ -24,6 +24,10 @@ let legendMixin = {
         this.getHtmlForUnit(colorMap, 'kt', 'm/s', value => value * 1.94384)
       ]
       let currentUnitIndex = 0
+      if (this.forecastLayer.options && this.forecastLayer.options.displayOptions &&
+          this.forecastLayer.options.displayOptions.speedUnit === 'kt') {
+        currentUnitIndex = 1
+      }
       this.legendControl._container.innerHTML = html[currentUnitIndex]
       this.legendControl._container.addEventListener('click', _ => {
         currentUnitIndex = (currentUnitIndex + 1) % html.length
