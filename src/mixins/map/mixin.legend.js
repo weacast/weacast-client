@@ -13,15 +13,15 @@ let legendMixin = {
       }
       return labels
     },
-    getHtmlForUnit(colorMap, unit, transform = value => value) {
+    getHtmlForUnit(colorMap, unit, nextUnit, transform = value => value) {
       let labelsForUnit = this.getLabelsForUnit(colorMap, unit, transform)
-      return '<div title="Click to convert speed to '+ unit + '" style="position:absolute; cursor:pointer;">'+ labelsForUnit.join('<br>') +'</div>'
+      return '<div title="Click to convert speed to '+ nextUnit + '" style="position:absolute; cursor:pointer;">'+ labelsForUnit.join('<br>') +'</div>'
     },
     setColorMap(colorMap) {
       // Build legend/labels for each unit
       let html = [
-        this.getHtmlForUnit(colorMap, 'm/s'),
-        this.getHtmlForUnit(colorMap, 'kt', value => value * 1.94384)
+        this.getHtmlForUnit(colorMap, 'm/s', 'kt'),
+        this.getHtmlForUnit(colorMap, 'kt', 'm/s', value => value * 1.94384)
       ]
       let currentUnitIndex = 0
       this.legendControl._container.innerHTML = html[currentUnitIndex]
