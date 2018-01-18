@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.1](https://github.com/weacast/weacast-client/tree/v0.6.1) (2018-01-18)
+
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.0...v0.6.1)
+
+**Fixed bugs:**
+
+- An error is raised under IE11 and the app does not load [\#4](https://github.com/weacast/weacast-client/issues/4)
+
 ## [v0.6.0](https://github.com/weacast/weacast-client/tree/v0.6.0) (2018-01-16)
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v0.5.0...v0.6.0)
