@@ -1,5 +1,5 @@
 import L from 'leaflet'
-import 'leaflet-canvaslayer-field/src/_main.js'
+import 'leaflet-canvaslayer-field/dist/leaflet.canvaslayer.field.js'
 import * as d3 from 'd3'
 import chroma from 'chroma-js'
 import { ForecastLayer } from './forecast-layer'
