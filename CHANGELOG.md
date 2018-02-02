@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.6.2](https://github.com/weacast/weacast-client/tree/v0.6.2) (2018-02-02)
+
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.1...v0.6.2)
+
+**Fixed bugs:**
+
+- Wind barb strokes are not right [\#5](https://github.com/weacast/weacast-client/issues/5)
+
 ## [v0.6.1](https://github.com/weacast/weacast-client/tree/v0.6.1) (2018-01-18)
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.0...v0.6.1)
