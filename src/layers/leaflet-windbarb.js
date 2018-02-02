@@ -1,7 +1,10 @@
-/**
- * Created by hulongping on 2017/3/26.
- * leaflet插件开发，参考 https://github.com/Leaflet/Leaflet/blob/master/PLUGIN-GUIDE.md
- */
+/*
+ (c) 2016, Manuel Bär (www.geonet.ch)
+ Leaflet.WindBarbs, a wind barb plugin for Leaflet.
+ This plugin enables the automatic creation of 
+ wind barb icons in Leaflet.
+ version: 0.0.5
+*/
 import L from 'leaflet'
 
 let WindBarbIcon = L.Icon.extend({
