@@ -44,7 +44,7 @@ let HeatLayer = ForecastLayer.extend({
     }
   },
 
-  getColorMap() {
+  getColorMap () {
     let colorMap = []
     let colors = this._baseLayer._heatmap._config.gradient || this._baseLayer._heatmap._config.defaultGradient
     let values = Object.keys(colors).sort()

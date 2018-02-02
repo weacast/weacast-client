@@ -4,20 +4,20 @@ import 'leaflet-legend/leaflet-legend.css'
 import store from '../store'
 
 let legendMixin = {
-   methods: {
-    getLabelsForUnit(colorMap, unit, transform) {
+  methods: {
+    getLabelsForUnit (colorMap, unit, transform) {
       let labels = ['<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background: white">' + unit.toUpperCase() + '</span> ']
       for (var i = 0; i < colorMap.length; i++) {
         labels.push('<span style="text-align:center; width: 30px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; background:' +
-          colorMap[i].color + '">' + transform(colorMap[i].value).toFixed(0) +'</span> ')
+          colorMap[i].color + '">' + transform(colorMap[i].value).toFixed(0) + '</span> ')
       }
       return labels
     },
-    getHtmlForUnit(colorMap, unit, nextUnit, transform = value => value) {
+    getHtmlForUnit (colorMap, unit, nextUnit, transform = value => value) {
       let labelsForUnit = this.getLabelsForUnit(colorMap, unit, transform)
-      return '<div title="Click to convert speed to '+ nextUnit + '" style="position:absolute; cursor:pointer;">'+ labelsForUnit.join('<br>') +'</div>'
+      return '<div title="Click to convert speed to ' + nextUnit + '" style="position:absolute; cursor:pointer;">' + labelsForUnit.join('<br>') + '</div>'
     },
-    setColorMap(colorMap) {
+    setColorMap (colorMap) {
       // Build legend/labels for each unit
       let html = [
         this.getHtmlForUnit(colorMap, 'm/s', 'kt'),
@@ -33,8 +33,8 @@ let legendMixin = {
         currentUnitIndex = (currentUnitIndex + 1) % html.length
         this.legendControl._container.innerHTML = html[currentUnitIndex]
       })
-     },
-     show() {
+    },
+    show () {
       this.legendControl.addTo(this.map)
       let colorMap = this.forecastLayer.getColorMap()
       // Nothing to display ?
@@ -43,18 +43,18 @@ let legendMixin = {
       } else {
         this.setColorMap(colorMap)
       }
-     },
-     hide () {
+    },
+    hide () {
       this.forecastLayer.off('data', this.show)
       this.forecastLayer = null
       this.legendControl.remove()
-     }
+    }
   },
   mounted () {
-    this.legendControl = new L.Control.Legend({ 
+    this.legendControl = new L.Control.Legend({
       position: 'topleft'
     })
-    //this.controls.push(this.legendControl)          
+    // this.controls.push(this.legendControl)
     this.map.on('layeradd', event => {
       // We only manage forecast layers
       if (event.layer instanceof L.Weacast.ForecastLayer) {

@@ -20,7 +20,7 @@ let ColorLayer = ForecastLayer.extend({
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
   },
 
-  getColorMap() {
+  getColorMap () {
     let colorMap = []
     let colors = chroma.brewer[this._baseLayer.options.colorMap]
     let min, max
