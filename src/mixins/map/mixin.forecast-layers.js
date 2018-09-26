@@ -1,7 +1,7 @@
 import L from 'leaflet'
-import 'leaflet-timedimension'
-import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
 import moment from 'moment'
+import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
 import 'iso8601-js-period/iso8601.js'
 import '../../layers'
 

@@ -1,5 +1,6 @@
 import L from 'leaflet'
-import 'leaflet-timedimension'
+import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
 
 let ForecastLayer = L.TimeDimension.Layer.extend({
 
@@ -34,7 +35,10 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
   fetchAvailableTimes () {
     if (!this.options.elements || this.options.elements.length === 0 || !this._timeDimension) return
     // We assume that if multiple elements all have the same forecast times because sharing the underlying forecast model
-    return this.api.getService(this.forecastModel.name + '/' + this.options.elements[0]).find({
+    const serviceName = this.forecastModel.name + '/' + this.options.elements[0]
+    // Check if we can use Weacast interface or basic Feathers interface
+    const service = (typeof this.api.getService === 'function' ? this.api.getService(serviceName) : this.api.service(serviceName))
+    return service.find({
       query: {
         $paginate: false,
         $select: ['forecastTime']
@@ -80,7 +84,10 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
     let query = this.getQuery()
     let queries = []
     for (let element of this.options.elements) {
-      queries.push(this.api.getService(this.forecastModel.name + '/' + element).find(query))
+      const serviceName = this.forecastModel.name + '/' + element
+      // Check if we can use Weacast interface or basic Feathers interface
+      const service = (typeof this.api.getService === 'function' ? this.api.getService(serviceName) : this.api.service(serviceName))
+      queries.push(service.find(query))
     }
 
     return Promise.all(queries)

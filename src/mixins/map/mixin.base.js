@@ -6,7 +6,8 @@ import 'leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.vectorgrid/dist/Leaflet.VectorGrid.bundled.js'
-import 'leaflet-timedimension'
+import 'leaflet-timedimension/dist/leaflet.timedimension.src.js'
+import 'leaflet-timedimension/dist/leaflet.timedimension.control.css'
 import store from '../store'
 
 // Fix to make Leaflet assets be correctly inserted by webpack
