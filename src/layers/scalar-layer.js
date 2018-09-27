@@ -1,10 +1,65 @@
 import L from 'leaflet'
 import chroma from 'chroma-js'
-import { ForecastLayer } from './forecast-layer'
 import * as PIXI from 'pixi.js'
 import 'leaflet-pixi-overlay'
+import { ForecastLayer } from './forecast-layer'
+import { Grid, GridView } from './../grid'
 
 window.chroma = chroma
+
+const VERTEX_BUFFER_MAX_SIZE = 65536
+
+function getColor (value, colorMap) {
+  let entry = _.find(colorMap, colorMapEntry => { return colorMapEntry.value > value })
+  if (entry) return entry.color
+  return _.last(colorMap).color
+}
+
+function buildMesh (gridView, colorMap, utils) {
+  let meshes = []
+  if ((gridView.size[0] * gridView.size[1]) > VERTEX_BUFFER_MAX_SIZE) {
+    let subgridViews = gridView.subdivide()
+    subgridViews.forEach(subgridView => {
+      let subMeshes = buildMesh(subgridView, colorMap, utils)
+      meshes.push(...subMeshes)
+    })
+  } else {
+    let vertices = []
+    let colors = []
+    let indices = []
+    for (let j = 0; j < gridView.size[1]; j++) {
+      for (let i = 0; i < gridView.size[0]; i++) {
+        let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0])
+        let y = gridView.grid.origin[1] - ((gridView.origin[1] + j) * gridView.grid.resolution[1])
+        let pos = utils.latLngToLayerPoint([y, x])
+        vertices.push(pos.x)
+        vertices.push(pos.y)
+        let cellValue = gridView.getValue(i, j)
+        let rgb = PIXI.utils.hex2rgb(parseInt(getColor(cellValue, colorMap).substring(1), 16))
+        colors.push(rgb[0])
+        colors.push(rgb[1])
+        colors.push(rgb[2])
+        if (i < (gridView.size[0] - 1) && j < (gridView.size[1] - 1)) {
+          let index00 = (j * gridView.size[0]) + i
+          let index01 = index00 + 1
+          let index10 = index00 + gridView.size[0]
+          let index11 = index10 + 1
+          indices.push(index00)
+          indices.push(index10)
+          indices.push(index01)
+          indices.push(index01)
+          indices.push(index10)
+          indices.push(index11)
+        }
+      }
+    }
+    let mesh = new PIXI.mesh.Mesh(null, new Float32Array(vertices), null, new Uint16Array(indices), PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES)
+    mesh.colors = new Float32Array(colors)
+    meshes.push(mesh)
+  }
+  return meshes
+}
+
 
 let ScalarLayer = ForecastLayer.extend({
 
@@ -76,24 +131,23 @@ let ScalarLayer = ForecastLayer.extend({
 
   drawScalarGrid (utils) {
     // If no data return
-    if (!this.field.zs) return 
+    if (!this.grid.data) return 
     // Retrive utils objects
     let renderer = utils.getRenderer()
     let container = this.pixiContainer
     // It the PIXI container is null then build the grid
     if (this.pixiContainer.children.length === 0) {
-      const yULCorner = this.field.yllCorner + (this.field.cellYSize * this.field.nRows)
-      for (let i = 0; i < this.field.nCols; i++) {
-        for (let j = 0; j < this.field.nRows; j++) {
-          let x = this.field.xllCorner + i * this.field.cellXSize
-          let y = yULCorner - j * this.field.cellYSize
-          let xCell = x - (this.field.cellXSize / 2)
-          let yCell = y - (this.field.cellYSize / 2)
+      for (let j = 0; j < this.grid.size[1]; j++) {
+        for (let i = 0; i < this.grid.size[0]; i++) {
+          let x = this.grid.origin[0] + i * this.grid.resolution[0]
+          let y = this.grid.origin[1] - j * this.grid.resolution[1]
+          let xCell = x - (this.grid.resolution[0] / 2)
+          let yCell = y - (this.grid.resolution[1] / 2)
           let minCell = utils.latLngToLayerPoint([yCell, xCell])
-          let maxCell = utils.latLngToLayerPoint([yCell + this.field.cellYSize, xCell + this.field.cellXSize])
+          let maxCell = utils.latLngToLayerPoint([yCell + this.grid.resolution[0], xCell + this.grid.resolution[1]])
           let cell = new PIXI.Graphics()
-          let cellValue = this.field.zs[(j * this.field.nCols) + i]    
-          cell.beginFill(parseInt(this.getColor(cellValue).substring(1), 16), this.options.opacity)
+          let cellValue = this.grid.data[(j * this.grid.size[0]) + i]    
+          cell.beginFill(parseInt(getColor(cellValue, this.colorMap).substring(1), 16), this.options.opacity)
           cell.drawRect(minCell.x, minCell.y, maxCell.x - minCell.x, maxCell.y - minCell.y)
           cell.endFill()
           container.addChild(cell)
@@ -105,55 +159,25 @@ let ScalarLayer = ForecastLayer.extend({
 
   drawScalarMesh (utils) {
     // If no data return
-    if (!this.field.zs) return 
+    if (!this.grid.data) return 
     // Retrive utils objects
     let renderer = utils.getRenderer()
     let container = this.pixiContainer
     // It the PIXI container is null then build the grid
     if (this.pixiContainer.children.length === 0) {
       renderer.gl.blendFunc(renderer.gl.ONE, renderer.gl.ZERO)
-      const yULCorner = this.field.yllCorner + (this.field.cellYSize * this.field.nRows)
-      let vertices = []
-      let colors = []
-      let indices = []
-      for (let i = 0; i < this.field.nCols; i++) {
-        for (let j = 0; j < this.field.nRows; j++) {
-          let x = this.field.xllCorner + i * this.field.cellXSize
-          let y = yULCorner - j * this.field.cellYSize
-          let pos = utils.latLngToLayerPoint([y, x])
-          vertices.push(pos.x)
-          vertices.push(pos.y)
-          let cellValue = this.field.zs[(j * this.field.nCols) + i]    
-          let rgb = PIXI.utils.hex2rgb(parseInt(this.getColor(cellValue).substring(1), 16))
-          colors.push(rgb[0])
-          colors.push(rgb[1])
-          colors.push(rgb[2])
-          if (i < (this.field.nCols -1) && j < (this.field.nRows - 1)) {
-            let index00 = (j * this.field.nCols) + i
-            let index01 = index00 + 1
-            let index10 = index00 + this.field.nCols
-            let index11 = index10 + 1
-            indices.push(index00)
-            indices.push(index10)
-            indices.push(index01)
-            indices.push(index01)
-            indices.push(index10)
-            indices.push(index11)
-          }
-        }
-      }
-      let mesh = new PIXI.mesh.Mesh(null, new Float32Array(vertices), null, new Uint16Array(indices), PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES)
-      mesh.colors = new Float32Array(colors)
-      mesh.alpha = this.options.opacity
-			container.addChild(mesh)      
+      let gridView = new GridView({
+        grid: this.grid,
+        origin: [0, 0],
+        size: this.grid.size
+      })
+      let meshes = buildMesh(gridView, this.colorMap, utils)
+      meshes.forEach(mesh => {
+        mesh.alpha = this.options.opacity
+			  container.addChild(mesh)      
+      })
     }
     renderer.render(container)
-  },
-
-  getColor (value) {
-    let entry = _.find(this.colorMap, colorMapEntry => { return colorMapEntry.value > value })
-    if (entry) return entry.color
-    return _.last(this.colorMap).color
   },
 
   getColorMap () {
@@ -173,22 +197,14 @@ let ScalarLayer = ForecastLayer.extend({
     this.minValue = data[0].minValue
     this.maxValue = data[0].maxValue
     this.colorMap = this.getColorMap()
-    this.field.zs = data[0].data
+    this.grid.data = data[0].data
     this.pixiContainer.removeChildren()
     this._baseLayer.redraw()
     ForecastLayer.prototype.setData.call(this, data)
   },
 
   setForecastModel (model) {
-    // Format in leaflet-canvaslayer-field layer data model
-    this.field = {
-      nCols: model.size[0],
-      nRows: model.size[1],
-      xllCorner: model.bounds[0],
-      yllCorner: model.bounds[1],
-      cellXSize: model.resolution[0],
-      cellYSize: model.resolution[1]
-    }
+    this.grid = new Grid(model)
     ForecastLayer.prototype.setForecastModel.call(this, model)
   }
 })
