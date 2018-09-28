@@ -1,7 +1,7 @@
 /*
  (c) 2016, Manuel Bär (www.geonet.ch)
  Leaflet.WindBarbs, a wind barb plugin for Leaflet.
- This plugin enables the automatic creation of 
+ This plugin enables the automatic creation of
  wind barb icons in Leaflet.
  version: 0.0.5
 */

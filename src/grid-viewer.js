@@ -1,5 +1,4 @@
 export class GridView {
-
   constructor (options) {
     Object.assign(this, options)
   }
@@ -16,14 +15,14 @@ export class GridView {
     let views = []
     if (this.size[0] >= this.size[1]) {
       views.push(new GridView({
-        grid: this.grid, 
+        grid: this.grid,
         origin: this.origin,
         size: [Math.trunc(this.size[0] / 2) + 1, this.size[1]],
         offset: this.offset,
         sew: this.sew
       }))
       views.push(new GridView({
-        grid: this.grid, 
+        grid: this.grid,
         origin: [this.origin[0] + Math.trunc(this.size[0] / 2), this.origin[1]],
         size: [Math.trunc(this.size[0] / 2) + (this.size[0] % 2), this.size[1]],
         offset: this.offset,
@@ -31,14 +30,14 @@ export class GridView {
       }))
     } else {
       views.push(new GridView({
-        grid: this.grid, 
+        grid: this.grid,
         origin: this.origin,
         size: [this.size[0], Math.trunc(this.size[1] / 2) + 1],
         offset: this.offset,
         sew: this.sew
       }))
       views.push(new GridView({
-        grid: this.grid, 
+        grid: this.grid,
         origin: [this.origin[0], this.origin[1] + Math.trunc(this.size[1] / 2)],
         size: [this.size[0], Math.trunc(this.size[1] / 2) + (this.size[1] % 2)],
         offset: this.offset,
@@ -50,10 +49,9 @@ export class GridView {
 }
 
 export class GridViewer {
- 
   constructor (grid) {
     this.grid = grid
-    this.sew = (grid.bounds[2] - grid.bounds[0]) === 360 ? true: false
+    this.sew = (grid.bounds[2] - grid.bounds[0]) === 360
   }
 
   getViews () {

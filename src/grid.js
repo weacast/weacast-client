@@ -141,5 +141,5 @@ export class Grid {
       }
     }
     return data
-  } 
+  }
 }

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import L from 'leaflet'
 import chroma from 'chroma-js'
 import * as PIXI from 'pixi.js'
@@ -24,11 +25,11 @@ function buildMesh (gridView, colorMap, utils, container, opacity) {
     let vertices = []
     let colors = []
     let indices = []
-    let width = gridView.size[0] + (gridView.sew ? 1 : 0) 
+    let width = gridView.size[0] + (gridView.sew ? 1 : 0)
     let height = gridView.size[1]
-    for (let j = 0; j <height; j++) {
+    for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
-        let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) +  gridView.offset
+        let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) + gridView.offset
         let y = gridView.grid.origin[1] - ((gridView.origin[1] + j) * gridView.grid.resolution[1])
         let pos = utils.latLngToLayerPoint([y, x])
         vertices.push(pos.x)
@@ -62,7 +63,7 @@ function buildMesh (gridView, colorMap, utils, container, opacity) {
 function buildCells (gridView, colorMap, utils, container, opacity) {
   for (let j = 0; j < gridView.size[1]; j++) {
     for (let i = 0; i < gridView.size[0]; i++) {
-      let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) +  gridView.offset
+      let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) + gridView.offset
       let y = gridView.grid.origin[1] - ((gridView.origin[1] + j) * gridView.grid.resolution[1])
       let xCell = x - (gridView.grid.resolution[0] / 2)
       let yCell = y - (gridView.grid.resolution[1] / 2)
@@ -91,9 +92,9 @@ let ScalarLayer = ForecastLayer.extend({
     // Create empty PIXI container
     if (this.options.mesh) {
       var _pixiGlCore2 = PIXI.glCore
-      PIXI.mesh.MeshRenderer.prototype.onContextChange = function onContextChange() {
+      PIXI.mesh.MeshRenderer.prototype.onContextChange = function onContextChange () {
         var gl = this.renderer.gl
-        this.shader = new PIXI.Shader(gl, 
+        this.shader = new PIXI.Shader(gl,
           'attribute vec2 aVertexPosition;\n' +
           'attribute vec3 aVertexColor;\n' +
           'uniform mat3 projectionMatrix;\n' +
@@ -112,8 +113,8 @@ let ScalarLayer = ForecastLayer.extend({
           '}\n'
         )
       }
-      PIXI.mesh.MeshRenderer.prototype.render = function render(mesh) {
-        var renderer = this.renderer;
+      PIXI.mesh.MeshRenderer.prototype.render = function render (mesh) {
+        var renderer = this.renderer
         var gl = renderer.gl
         var glData = mesh._glDatas[renderer.CONTEXT_UID]
         if (!glData) {
@@ -123,7 +124,7 @@ let ScalarLayer = ForecastLayer.extend({
             vertexBuffer: _pixiGlCore2.GLBuffer.createVertexBuffer(gl, mesh.vertices, gl.STREAM_DRAW),
             colorBuffer: _pixiGlCore2.GLBuffer.createVertexBuffer(gl, mesh.colors, gl.STREAM_DRAW),
             indexBuffer: _pixiGlCore2.GLBuffer.createIndexBuffer(gl, mesh.indices, gl.STATIC_DRAW)
-          };
+          }
           // build the vao object that will render..
           glData.vao = new _pixiGlCore2.VertexArrayObject(gl)
             .addIndex(glData.indexBuffer)
@@ -148,7 +149,7 @@ let ScalarLayer = ForecastLayer.extend({
 
   render (utils) {
     // If no data return
-    if (!this.grid.data) return 
+    if (!this.grid.data) return
     // Retrive utils objects
     let renderer = utils.getRenderer()
     let container = this.pixiContainer
@@ -167,7 +168,7 @@ let ScalarLayer = ForecastLayer.extend({
   getColorMap () {
     let colorMap = []
     let colors = chroma.brewer[this.options.colorMap]
-    //[min, max] = this.options.color.domain()
+    // [min, max] = this.options.color.domain()
     for (let i = 0; i < colors.length; i++) {
       colorMap.push({
         value: this.minValue + i * (this.maxValue - this.minValue) / colors.length,
