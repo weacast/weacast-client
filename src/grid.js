@@ -141,45 +141,5 @@ export class Grid {
       }
     }
     return data
-  }
-}
-
-
-export class GridView {
-
-  constructor (options) {
-    Object.assign(this, options)
-  }
-
-  getValue (i, j) {
-    return this.grid.getValue(this.origin[0] + i, this.origin[1] + j)
-  }
-
-  subdivide () {
-    let views = []
-    if (this.size[0] >= this.size[1]) {
-      views.push(new GridView({
-        grid: this.grid, 
-        origin: this.origin,
-        size: [Math.trunc(this.size[0] / 2) + 1, this.size[1]]
-      }))
-      views.push(new GridView({
-        grid: this.grid, 
-        origin: [this.origin[0] + Math.trunc(this.size[0] / 2), this.origin[1]],
-        size: [Math.trunc(this.size[0] / 2) + (this.size[0] % 2), this.size[1]]
-      }))
-    } else {
-      views.push(new GridView({
-        grid: this.grid, 
-        origin: this.origin,
-        size: [this.size[0], Math.trunc(this.size[1] / 2) + 1]
-      }))
-      views.push(new GridView({
-        grid: this.grid, 
-        origin: [this.origin[0], this.origin[1] + Math.trunc(this.size[1] / 2)],
-        size: [this.size[0], Math.trunc(this.size[1] / 2) + (this.size[1] % 2)]
-      }))
-    }
-    return views
-  }
+  } 
 }

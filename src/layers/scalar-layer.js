@@ -3,7 +3,8 @@ import chroma from 'chroma-js'
 import * as PIXI from 'pixi.js'
 import 'leaflet-pixi-overlay'
 import { ForecastLayer } from './forecast-layer'
-import { Grid, GridView } from './../grid'
+import { Grid } from './../grid'
+import { GridViewer } from './../grid-viewer'
 
 window.chroma = chroma
 
@@ -15,21 +16,19 @@ function getColor (value, colorMap) {
   return _.last(colorMap).color
 }
 
-function buildMesh (gridView, colorMap, utils) {
-  let meshes = []
+function buildMesh (gridView, colorMap, utils, container, opacity) {
   if ((gridView.size[0] * gridView.size[1]) > VERTEX_BUFFER_MAX_SIZE) {
-    let subgridViews = gridView.subdivide()
-    subgridViews.forEach(subgridView => {
-      let subMeshes = buildMesh(subgridView, colorMap, utils)
-      meshes.push(...subMeshes)
-    })
+    let subgridViews = gridView.cut()
+    subgridViews.forEach(subgridView => buildMesh(subgridView, colorMap, utils, container, opacity))
   } else {
     let vertices = []
     let colors = []
     let indices = []
-    for (let j = 0; j < gridView.size[1]; j++) {
-      for (let i = 0; i < gridView.size[0]; i++) {
-        let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0])
+    let width = gridView.size[0] + (gridView.sew ? 1 : 0) 
+    let height = gridView.size[1]
+    for (let j = 0; j <height; j++) {
+      for (let i = 0; i < width; i++) {
+        let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) +  gridView.offset
         let y = gridView.grid.origin[1] - ((gridView.origin[1] + j) * gridView.grid.resolution[1])
         let pos = utils.latLngToLayerPoint([y, x])
         vertices.push(pos.x)
@@ -39,10 +38,10 @@ function buildMesh (gridView, colorMap, utils) {
         colors.push(rgb[0])
         colors.push(rgb[1])
         colors.push(rgb[2])
-        if (i < (gridView.size[0] - 1) && j < (gridView.size[1] - 1)) {
-          let index00 = (j * gridView.size[0]) + i
+        if (i < (width - 1) && j < (height - 1)) {
+          let index00 = (j * width) + i
           let index01 = index00 + 1
-          let index10 = index00 + gridView.size[0]
+          let index10 = index00 + width
           let index11 = index10 + 1
           indices.push(index00)
           indices.push(index10)
@@ -55,11 +54,29 @@ function buildMesh (gridView, colorMap, utils) {
     }
     let mesh = new PIXI.mesh.Mesh(null, new Float32Array(vertices), null, new Uint16Array(indices), PIXI.mesh.Mesh.DRAW_MODES.TRIANGLES)
     mesh.colors = new Float32Array(colors)
-    meshes.push(mesh)
+    mesh.alpha = opacity
+    container.addChild(mesh)
   }
-  return meshes
 }
 
+function buildCells (gridView, colorMap, utils, container, opacity) {
+  for (let j = 0; j < gridView.size[1]; j++) {
+    for (let i = 0; i < gridView.size[0]; i++) {
+      let x = gridView.grid.origin[0] + ((gridView.origin[0] + i) * gridView.grid.resolution[0]) +  gridView.offset
+      let y = gridView.grid.origin[1] - ((gridView.origin[1] + j) * gridView.grid.resolution[1])
+      let xCell = x - (gridView.grid.resolution[0] / 2)
+      let yCell = y - (gridView.grid.resolution[1] / 2)
+      let minCell = utils.latLngToLayerPoint([yCell, xCell])
+      let maxCell = utils.latLngToLayerPoint([yCell + gridView.grid.resolution[0], xCell + gridView.grid.resolution[1]])
+      let cellValue = gridView.getValue(i, j)
+      let cell = new PIXI.Graphics()
+      cell.beginFill(parseInt(getColor(cellValue, colorMap).substring(1), 16), opacity)
+      cell.drawRect(minCell.x, minCell.y, maxCell.x - minCell.x, maxCell.y - minCell.y)
+      cell.endFill()
+      container.addChild(cell)
+    }
+  }
+}
 
 let ScalarLayer = ForecastLayer.extend({
 
@@ -123,13 +140,13 @@ let ScalarLayer = ForecastLayer.extend({
     }
     this.pixiContainer = new PIXI.Container()
     // Create the PIXI overlay
-    let layer = L.pixiOverlay(utils => this.options.mesh ? this.drawScalarMesh(utils) : this.drawScalarGrid(utils), this.pixiContainer, {
+    let layer = L.pixiOverlay(utils => this.render(utils), this.pixiContainer, {
       autoPreventDefault: false
     })
     ForecastLayer.prototype.initialize.call(this, api, layer, options)
   },
 
-  drawScalarGrid (utils) {
+  render (utils) {
     // If no data return
     if (!this.grid.data) return 
     // Retrive utils objects
@@ -137,45 +154,12 @@ let ScalarLayer = ForecastLayer.extend({
     let container = this.pixiContainer
     // It the PIXI container is null then build the grid
     if (this.pixiContainer.children.length === 0) {
-      for (let j = 0; j < this.grid.size[1]; j++) {
-        for (let i = 0; i < this.grid.size[0]; i++) {
-          let x = this.grid.origin[0] + i * this.grid.resolution[0]
-          let y = this.grid.origin[1] - j * this.grid.resolution[1]
-          let xCell = x - (this.grid.resolution[0] / 2)
-          let yCell = y - (this.grid.resolution[1] / 2)
-          let minCell = utils.latLngToLayerPoint([yCell, xCell])
-          let maxCell = utils.latLngToLayerPoint([yCell + this.grid.resolution[0], xCell + this.grid.resolution[1]])
-          let cell = new PIXI.Graphics()
-          let cellValue = this.grid.data[(j * this.grid.size[0]) + i]    
-          cell.beginFill(parseInt(getColor(cellValue, this.colorMap).substring(1), 16), this.options.opacity)
-          cell.drawRect(minCell.x, minCell.y, maxCell.x - minCell.x, maxCell.y - minCell.y)
-          cell.endFill()
-          container.addChild(cell)
-        }
+      if (this.options.mesh) {
+        renderer.gl.blendFunc(renderer.gl.ONE, renderer.gl.ZERO)
+        this.viewer.getViews().forEach(view => buildMesh(view, this.colorMap, utils, container, this.options.opacity))
+      } else {
+        this.viewer.getViews().forEach(view => buildCells(view, this.colorMap, utils, container, this.options.opacity))
       }
-    }
-    renderer.render(container)
-  },
-
-  drawScalarMesh (utils) {
-    // If no data return
-    if (!this.grid.data) return 
-    // Retrive utils objects
-    let renderer = utils.getRenderer()
-    let container = this.pixiContainer
-    // It the PIXI container is null then build the grid
-    if (this.pixiContainer.children.length === 0) {
-      renderer.gl.blendFunc(renderer.gl.ONE, renderer.gl.ZERO)
-      let gridView = new GridView({
-        grid: this.grid,
-        origin: [0, 0],
-        size: this.grid.size
-      })
-      let meshes = buildMesh(gridView, this.colorMap, utils)
-      meshes.forEach(mesh => {
-        mesh.alpha = this.options.opacity
-			  container.addChild(mesh)      
-      })
     }
     renderer.render(container)
   },
@@ -205,6 +189,7 @@ let ScalarLayer = ForecastLayer.extend({
 
   setForecastModel (model) {
     this.grid = new Grid(model)
+    this.viewer = new GridViewer(this.grid)
     ForecastLayer.prototype.setForecastModel.call(this, model)
   }
 })
