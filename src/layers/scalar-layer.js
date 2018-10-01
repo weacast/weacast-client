@@ -35,7 +35,7 @@ function buildMesh (gridView, colorMap, utils, container, opacity) {
         vertices.push(pos.x)
         vertices.push(pos.y)
         let cellValue = gridView.getValue(i, j)
-        let rgb = PIXI.utils.hex2rgb(parseInt(getColor(cellValue, colorMap).substring(1), 16))
+        let rgb = PIXI.utils.hex2rgb(colorMap(cellValue).num())
         colors.push(rgb[0])
         colors.push(rgb[1])
         colors.push(rgb[2])
@@ -71,7 +71,7 @@ function buildCells (gridView, colorMap, utils, container, opacity) {
       let maxCell = utils.latLngToLayerPoint([yCell + gridView.grid.resolution[0], xCell + gridView.grid.resolution[1]])
       let cellValue = gridView.getValue(i, j)
       let cell = new PIXI.Graphics()
-      cell.beginFill(parseInt(getColor(cellValue, colorMap).substring(1), 16), opacity)
+      cell.beginFill(colorMap(cellValue).num(), opacity)
       cell.drawRect(minCell.x, minCell.y, maxCell.x - minCell.x, maxCell.y - minCell.y)
       cell.endFill()
       container.addChild(cell)
@@ -168,7 +168,6 @@ let ScalarLayer = ForecastLayer.extend({
   getColorMap () {
     let colorMap = []
     let colors = chroma.brewer[this.options.colorMap]
-    // [min, max] = this.options.color.domain()
     for (let i = 0; i < colors.length; i++) {
       colorMap.push({
         value: this.minValue + i * (this.maxValue - this.minValue) / colors.length,
@@ -181,7 +180,7 @@ let ScalarLayer = ForecastLayer.extend({
   setData (data) {
     this.minValue = data[0].minValue
     this.maxValue = data[0].maxValue
-    this.colorMap = this.getColorMap()
+    this.colorMap = chroma.scale(this.options.colorMap).domain([this.minValue, this.maxValue])
     this.grid.data = data[0].data
     this.pixiContainer.removeChildren()
     this._baseLayer.redraw()
