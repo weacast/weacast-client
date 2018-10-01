@@ -79,7 +79,7 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
     // Already up-to-date ?
     if (this.downloadedForecastTime &&
         (this.currentForecastTime.getTime() === this.downloadedForecastTime.getTime())) return
-
+    this.downloadedForecastTime = this.currentForecastTime
     // Query data for current time
     let query = this.getQuery()
     let queries = []
@@ -99,8 +99,9 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
 
   setForecastModel (model) {
     this.forecastModel = model
+    this.downloadedForecastTime = null
     // This will launch a refresh
-    this.fetchAvailableTimes()
+    if (!this.options.hasOwnProperty('visible') || this.options.visible) this.fetchAvailableTimes()
   }
 
 })

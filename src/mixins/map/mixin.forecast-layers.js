@@ -61,7 +61,7 @@ let forecastLayersMixin = {
     this.forecastLayers = []
   },
   mounted () {
-    let timeDimension = L.timeDimension({})
+    let timeDimension = L.timeDimension({})   
     timeDimension.on('timeload', data => {
       this.setCurrentTime(data.time)
     })
@@ -69,7 +69,8 @@ let forecastLayersMixin = {
       timeDimension,
       position: 'bottomright',
       speedSlider: false,
-      playButton: false
+      playButton: false,
+      playerOptions: { minBufferReady: -1 } // This avoid preloading of next times
     })
     this.controls.push(timeDimensionControl)
     // Make time dimension available
