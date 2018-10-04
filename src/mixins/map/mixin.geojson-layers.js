@@ -29,6 +29,27 @@ let geojsonLayersMixin = {
       }
     },
     getGeoJsonOptions () {
+      function htmlForProperties(feature, properties) {
+        const borderStyle = ' style="border: 1px solid black; border-collapse: collapse;"'
+        let html = '<table' + borderStyle + '>'
+        html += '<tr' + borderStyle + '><th' + borderStyle + '><pre> Property </pre></th><th><pre>  Value  </pre></th></tr>'
+        html += properties.map(k => {
+          let kHtml = '<tr style="border: 1px solid black; border-collapse: collapse;"><th' + borderStyle + '>' + k + '</th><th>'
+          // Unify to array
+          let values = feature.properties[k]
+          if (!Array.isArray(values)) values = [values]
+          for (let i = 0; i < values.length; i++) {
+            const value = values[i]
+            if (Number.isFinite(value)) kHtml += value.toFixed(2)
+            else kHtml += value
+            if (i < (values.length - 1)) kHtml += '<br/>'
+          }
+          kHtml += '</th></tr>'
+          return kHtml
+        })
+        .join('')
+        return html + '</table>'
+      }
       let geojsonOptions = {
         onEachFeature: (feature, layer) => {
           const featureStyle = this.configuration.featureStyle
@@ -37,9 +58,7 @@ let geojsonLayersMixin = {
             layer.bindPopup(this.getFeaturePopup(feature, layer))
           } else if (feature.properties) {
             // Default content
-            const borderStyle = ' style="border: 1px solid black; border-collapse: collapse;"'
-            let html = '<table' + borderStyle + '>'
-            html += '<tr' + borderStyle + '><th' + borderStyle + '>Property</th><th>Value</th></tr>'
+            
             let properties = Object.keys(feature.properties)
             // Custom list given ?
             if (featureStyle && featureStyle.popup) {
@@ -50,18 +69,14 @@ let geojsonLayersMixin = {
                 properties = properties.filter(property => !featureStyle.popup.excludedProperties.includes(property))
               }
             }
-            html += properties
-            .filter(k => feature.properties[k] !== null && feature.properties[k] !== undefined)
-            .map(k => '<tr style="border: 1px solid black; border-collapse: collapse;"><th' + borderStyle + '>' + k + '</th><th>' + feature.properties[k] + '</th></tr>')
-            .join('')
-            html += '</table>'
+            const html = htmlForProperties(feature, properties.filter(k => feature.properties[k] !== null && feature.properties[k] !== undefined))
             // Configured or default style
             if (featureStyle && featureStyle.popup && featureStyle.popup.options) {
               layer.bindPopup(html, featureStyle.popup.options)
             } else {
               layer.bindPopup(html, {
                 maxHeight: 400,
-                maxWidth: 400
+                maxWidth: 600
               })
             }
           }
