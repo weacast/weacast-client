@@ -37,7 +37,9 @@
     "mocha": "cross-env NODE_CONFIG_DIR=./test/config/ mocha --opts mocha.opts",
     "coverage": "cross-env NODE_CONFIG_DIR=./test/config/ node --harmony_async_await node_modules/istanbul/lib/cli cover node_modules/mocha/bin/_mocha -- --opts mocha.opts",
     "test": "npm run compile && npm run lint && npm run coverage",
-    "start": "npm run compile && node --harmony_async_await lib"
+    "start": "npm run compile && node --harmony_async_await lib",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "standard": {
     "sourceType": "module",
@@ -72,7 +74,8 @@
     "loglevel": "^1.4.1",
     "pixi.js": "^4.8.2",
     "socket.io-client": "^2.0.4",
-    "vue": "^2.3.3"
+    "vue": "^2.3.3",
+    "snyk": "^1.104.2"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
@@ -92,5 +95,6 @@
     "mocha": "^3.2.0",
     "shx": "^0.2.2",
     "standard": "^10.0.2"
-  }
+  },
+  "snyk": true
 }
