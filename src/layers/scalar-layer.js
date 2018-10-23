@@ -8,14 +8,8 @@ import { Grid } from './../grid'
 import { GridViewer } from './../grid-viewer'
 
 window.chroma = chroma
-
+// WebGL limit
 const VERTEX_BUFFER_MAX_SIZE = 65536
-
-function getColor (value, colorMap) {
-  let entry = _.find(colorMap, colorMapEntry => { return colorMapEntry.value > value })
-  if (entry) return entry.color
-  return _.last(colorMap).color
-}
 
 function buildMesh (gridView, colorMap, utils, container, opacity) {
   if ((gridView.size[0] * gridView.size[1]) > VERTEX_BUFFER_MAX_SIZE) {
@@ -180,7 +174,7 @@ let ScalarLayer = ForecastLayer.extend({
   setData (data) {
     this.minValue = data[0].minValue
     this.maxValue = data[0].maxValue
-    this.colorMap = chroma.scale(this.options.colorMap).domain([this.minValue, this.maxValue])
+    this.colorMap = chroma.scale(this.options.colorMap).domain(this.options.colorDomain || [this.minValue, this.maxValue])
     this.grid.data = data[0].data
     this.pixiContainer.removeChildren()
     this._baseLayer.redraw()

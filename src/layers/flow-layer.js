@@ -19,7 +19,7 @@ let FlowLayer = ForecastLayer.extend({
       // FIXME : make this dynamic
       minVelocity: 3,           // used to align color scale
       maxVelocity: 20,          // used to align color scale
-      velocityScale: 0.01,     // modifier for particle animations, arbitrarily defaults to 0.005
+      velocityScale: 0.01,      // modifier for particle animations, arbitrarily defaults to 0.005
       colorScale: [
         'rgb(36,104, 180)',
         'rgb(60,157, 194)',
