@@ -174,7 +174,8 @@ let ScalarLayer = ForecastLayer.extend({
   setData (data) {
     this.minValue = data[0].minValue
     this.maxValue = data[0].maxValue
-    this.colorMap = chroma.scale(this.options.colorMap).domain(this.options.colorDomain || [this.minValue, this.maxValue])
+    this.colorMap = chroma.scale(this.options.colorMap).domain([this.minValue, this.maxValue])
+    if (this.options.colorClasses) this.colorMap.classes(this.options.colorClasses)
     this.grid.data = data[0].data
     this.pixiContainer.removeChildren()
     this._baseLayer.redraw()

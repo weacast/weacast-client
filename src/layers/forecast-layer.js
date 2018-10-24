@@ -69,7 +69,8 @@ let ForecastLayer = L.TimeDimension.Layer.extend({
   },
 
   setData (data) {
-    // To be overriden, call ancestor to send event
+    // To be overriden, call ancestor to set flag and send event
+    this.hasData = true
     this.fire('data', data)
   },
 
