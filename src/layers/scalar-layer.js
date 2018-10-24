@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import L from 'leaflet'
 import chroma from 'chroma-js'
 import * as PIXI from 'pixi.js'
