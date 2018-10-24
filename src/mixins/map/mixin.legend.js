@@ -19,8 +19,8 @@ let legendMixin = {
     },
     getHtmlForUnit (colorMap, units) {
       let labelsForUnit = this.getLabelsForUnit(colorMap, units)
-      if (units.from !=== units.to) return '<div title="Click to convert to ' + units.to + '" style="position:absolute; cursor:pointer;">' + labelsForUnit.join('<br>') + '</div>'
-      else return labelsForUnit.join('<br>')
+      if (units.from !== units.to) return '<div title="Click to convert to ' + units.to + '" style="position:absolute; cursor:pointer;">' + labelsForUnit.join('<br>') + '</div>'
+      else return '<div style="position:absolute; cursor:pointer;">' + labelsForUnit.join('<br>') + '</div>'
     },
     setLegendColorMap (legend, forecastLayer, colorMap) {
       const units = forecastLayer.options.units
