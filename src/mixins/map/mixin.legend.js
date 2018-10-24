@@ -67,7 +67,7 @@ let legendMixin = {
       // We only manage forecast layers
       if (forecastLayer instanceof L.Weacast.ForecastLayer) {
         const count = Object.keys(this.legends).length
-        let legend = new L.Control.Legend({ position: 'topleft' })
+        let legend = new L.Control.Legend({ position: 'topleft', collapsed: false })
         legend.offset = count * 40
         legend.callback = () => this.showLegend(forecastLayer)
         this.legends[forecastLayer._leaflet_id] = legend
