@@ -4,7 +4,7 @@ import store from '../store'
 let geojsonLayersMixin = {
   methods: {
     addGeoJson (geojson, name, geojsonOptions) {
-      return this.addLayer(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), name)
+      return this.addLayer(L.geoJson(geojson, Object.assign(this.getGeoJsonOptions(), geojsonOptions)), name)
     },
     addGeoJsonCluster (geojson, name, geojsonOptions) {
       let cluster = L.markerClusterGroup()
@@ -12,7 +12,7 @@ let geojsonLayersMixin = {
       return this.addLayer(cluster, name)
     },
     addTimedGeoJson (geojson, name, timeOptions, geojsonOptions) {
-      return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, geojsonOptions || this.getGeoJsonOptions()), timeOptions), name)
+      return this.addLayer(L.timeDimension.layer.geoJson(L.geoJson(geojson, Object.assign(this.getGeoJsonOptions(), geojsonOptions)), timeOptions), name)
     },
     createMarkerFromStyle (latlng, markerStyle) {
       if (markerStyle) {
