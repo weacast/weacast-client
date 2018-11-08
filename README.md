@@ -8,7 +8,7 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/weacast/weacast-client/badge.svg)](https://snyk.io/test/github/weacast/weacast-client)
 [![Download Status](https://img.shields.io/npm/dm/weacast-client.svg?style=flat-square)](https://www.npmjs.com/package/weacast-client)
 
-> _Important:_ `weacast-client` will not evolve anymore (see discussion [here](https://github.com/weacast/weacast-client/issues/6)) and will only be maintained for the purpose of our [demo application](https://github.com/weacast/weacast). If you'd like to build client applications you'd better have a look to dedicated map engine modules like https://github.com/weacast/weacast-leaflet or client API layer in https://github.com/weacast/weacast-core
+> _Important:_ `weacast-client` will not evolve anymore (see discussion [here](https://github.com/weacast/weacast-client/issues/6)) and will only be maintained for the purpose of our [demo application](https://github.com/weacast/weacast). If you'd like to build client applications using Weacast you'd better have a look to dedicated map engine modules like https://github.com/weacast/weacast-leaflet or client API layer in https://github.com/weacast/weacast-core
 
 > Basic utils to support Weacast-based clients
 
