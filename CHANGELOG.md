@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.0.0](https://github.com/weacast/weacast-client/tree/v1.0.0) (2019-04-17)
+
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.2...v1.0.0)
+
+**Implemented enhancements:**
+
+- Improve forecast layer legend [\#9](https://github.com/weacast/weacast-client/issues/9)
+
+**Fixed bugs:**
+
+- Forecast layer data fetched multiple times [\#7](https://github.com/weacast/weacast-client/issues/7)
+
 ## [v0.6.2](https://github.com/weacast/weacast-client/tree/v0.6.2) (2018-02-02)
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.1...v0.6.2)
