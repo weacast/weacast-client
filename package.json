@@ -45,9 +45,6 @@
       "mocha"
     ]
   },
-  "directories": {
-    "lib": "lib"
-  },
   "dependencies": {
     "@feathersjs/client": "^3.7.8",
     "@feathersjs/feathers": "^3.3.1",
