@@ -1,6 +1,6 @@
 {
   "name": "weacast-client",
-  "description": "Basic utilitiess to support Weacast-based clients",
+  "description": "Basic utilities to support Weacast-based clients",
   "version": "1.0.0",
   "homepage": "https://github.com/weacast/weacast-client",
   "main": "lib/",
@@ -20,9 +20,6 @@
   "contributors": [],
   "bugs": {
     "url": "https://github.com/weacast/weacast-client/issues"
-  },
-  "engines": {
-    "node": ">= 4.6.0"
   },
   "scripts": {
     "prepublish": "npm run compile",
