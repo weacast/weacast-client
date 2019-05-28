@@ -1,6 +1,5 @@
 import logger from 'loglevel'
-import feathers from 'feathers-client'
-import hooks from 'feathers-hooks'
+import feathers from '@feathersjs/client'
 import io from 'socket.io-client'
 import config from 'config'
 
@@ -12,7 +11,6 @@ export default function weacast () {
   } else {
     logger.setLevel('info')
   }
-  api.configure(hooks())
   if (config.transport === 'http') {
     api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
   } else {
