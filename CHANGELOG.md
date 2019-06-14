@@ -4,6 +4,8 @@
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v1.0.0...v1.1.0)
 
+- Upgrade dependencies (Feathers V3, etc.) [\#1](https://github.com/weacast/weacast/issues/1)
+
 ## [v1.0.0](https://github.com/weacast/weacast-client/tree/v1.0.0) (2019-04-17)
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v0.6.2...v1.0.0)
