@@ -11,17 +11,20 @@ export default function weacast () {
   } else {
     logger.setLevel('info')
   }
+  const origin = config.apiUrl || window.location.origin
   if (config.transport === 'http') {
-    api.configure(feathers.rest(window.location.origin).fetch(window.fetch.bind(window)))
+    api.configure(feathers.rest(origin).fetch(window.fetch.bind(window)))
   } else {
-    let socket = io(window.location.origin, {
+    let socket = io(origin, {
       transports: ['websocket'],
       path: config.apiPath + 'ws'
     })
-    api.configure(feathers.socketio(socket))
+    api.configure(feathers.socketio(socket, { timeout: config.apiTimeout || 30000 }))
   }
   api.configure(feathers.authentication({
     storage: window.localStorage,
+    cookie: config.apiJwt || 'weacast-jwt',
+    storageKey: config.apiJwt || 'weacast-jwt',
     path: config.apiPath + '/authentication'
   }))
 
