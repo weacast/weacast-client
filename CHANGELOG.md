@@ -1,10 +1,12 @@
 # Changelog
 
+## [v1.1.1](https://github.com/weacast/weacast-client/tree/v1.1.1) (2019-07-04)
+
+[Full Changelog](https://github.com/weacast/weacast-client/compare/v1.1.0...v1.1.1)
+
 ## [v1.1.0](https://github.com/weacast/weacast-client/tree/v1.1.0) (2019-06-14)
 
 [Full Changelog](https://github.com/weacast/weacast-client/compare/v1.0.0...v1.1.0)
-
-- Upgrade dependencies (Feathers V3, etc.) [\#1](https://github.com/weacast/weacast/issues/1)
 
 ## [v1.0.0](https://github.com/weacast/weacast-client/tree/v1.0.0) (2019-04-17)
 
