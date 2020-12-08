@@ -1,6 +1,6 @@
 # weacast-client
 
-[![Build Status](https://travis-ci.org/weacast/weacast-client.png?branch=master)](https://travis-ci.org/weacast/weacast-client)
+[![Build Status](https://travis-ci.com/weacast/weacast-client.png?branch=master)](https://travis-ci.com/weacast/weacast-client)
 [![Code Climate](https://codeclimate.com/github/weacast/weacast-client/badges/gpa.svg)](https://codeclimate.com/github/weacast/weacast-client)
 [![Test Coverage](https://codeclimate.com/github/weacast/weacast-client/badges/coverage.svg)](https://codeclimate.com/github/weacast/weacast-client/coverage)
 [![Dependency Status](https://img.shields.io/david/weacast/weacast-client.svg?style=flat-square)](https://david-dm.org/weacast/weacast-client)
