@@ -1,3 +1,5 @@
+> **Important:** this module is now deprecated, please have a look to the [weacast monorepo](https://github.com/weacast/weacast) and related [demo application](https://github.com/weacast/weacast-app).
+
 # weacast-client
 
 [![Build Status](https://app.travis-ci.com/weacast/weacast-client.svg?branch=master)](https://app.travis-ci.com/weacast/weacast-client)
